@@ -1,0 +1,2108 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Large scale assets and benchmarks for vision language policies">
+      
+      
+      
+        <link rel="canonical" href="https://allenai.github.io/molmospaces/upstream_molmospaces_readme/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Upstream molmospaces readme - MolmoSpaces</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/timeago.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#updates" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="MolmoSpaces" class="md-header__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+      
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MolmoSpaces
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Upstream molmospaces readme
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/allenai/molmospaces" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    allenai/molmospaces
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../concepts/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="MolmoSpaces" class="md-nav__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+      
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
+
+    </a>
+    MolmoSpaces
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/allenai/molmospaces" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    allenai/molmospaces
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-In Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asset_libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset and Grasp Libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Processing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmark Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/add_robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add a custom robot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/custom_assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add a custom asset library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/molmo_spaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    molmo_spaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/configs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    configs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data_generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/env/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    env
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/kinematics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kinematics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    renderer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/robots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    robots
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-the-filament-renderer-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing the Filament renderer (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-curobo-optional-used-only-for-rb-y1-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing cuRobo (optional, used only for RB-Y1 tasks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-environment-variables-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Set Environment Variables (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Test
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#molmospaces-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MolmoSpaces Assets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experiment-configs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Experiment Configs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmarks-and-evaluations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmarks and Evaluations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Benchmarks and Evaluations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installing-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-benchmarks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Benchmarks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#teleop-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Teleop Input
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-repositories" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Repositories:
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#code-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Formatting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-with-cursorvscode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use with Cursor/VSCode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mujoco-viewer-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mujoco Viewer Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#robot-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Robot Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-attributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Attributions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#citing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Citing
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/allenai/molmospaces/edit/main/docs/upstream_molmospaces_readme.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<div align="center">
+  <h1>
+  <img src="docs/images/MolmoSpacesLogo.png" alt="MolmoSpaces Logo" width="800" style="margin-left:'auto' margin-right:'auto' display:'block'"/></br>
+  A Large-Scale Open Ecosystem for Robot Manipulation and Navigation
+  <div align="center">
+    <a href="https://arxiv.org/pdf/2602.11337" target="_blank" rel="noopener noreferrer"><img alt="Paper" src="./docs/images/button_paper.svg"/></a>&nbsp;&nbsp;<a href="https://huggingface.co/datasets/allenai/molmospaces" target="_blank" rel="noopener noreferrer"><img alt="Data" src="./docs/images/button_data.svg"/></a>&nbsp;&nbsp;<a href="https://allenai.github.io/molmospaces/" target="_blank" rel="noopener noreferrer"><img alt="Docs" src="./docs/images/button_docs.svg"/></a>&nbsp;&nbsp;<a href="https://molmospaces.allen.ai/" target="_blank" rel="noopener noreferrer"><img alt="Demo" src="./docs/images/button_demo.svg"/></a>&nbsp;&nbsp;<a href="https://molmospaces.allen.ai/leaderboard" target="_blank" rel="noopener noreferrer"><img alt="Leaderboard" src="./docs/images/button_leaderboard.svg"/></a>
+  </div>
+  </br>
+  &</br>
+  <img src="docs/images/MolmoBotLogo.png" alt="MolmoSpaces Logo" width="800" style="margin-left:'auto' margin-right:'auto' display:'block'"/></br>
+  Large-Scale Simulation Enables Zero-Shot Manipulation
+  <div align="center">
+    <a href="https://allenai.github.io/MolmoBot" target="_blank" rel="noopener noreferrer"><img alt="Paper" src="./docs/images/button_website.svg"/></a>&nbsp;&nbsp;<a href="https://github.com/allenai/MolmoBot" target="_blank" rel="noopener noreferrer"><img alt="Paper" src="./docs/images/button_code_models.svg"/></a>&nbsp;&nbsp;<a href="https://huggingface.co/collections/allenai/molmobot-models" target="_blank" rel="noopener noreferrer"><img alt="Data" src="./docs/images/button_data_models.svg"/></a>&nbsp;&nbsp;<a href="https://huggingface.co/datasets/allenai/MolmoBot-Data" target="_blank" rel="noopener noreferrer"><img alt="Data" src="./docs/images/button_data.svg"/></a>
+  </div>
+  </h1>
+</div>
+
+<p></br>
+<br/></p>
+<div align="center">
+  <img src="docs/images/Multi_Simulator_Pan.jpg" alt="Multi-Simulator-Pan" width="1200" style="margin-left:'auto' margin-right:'auto' display:'block'"/>
+  <br>
+  <p>Assets from MolmoSpaces are usable in MuJoCo, Isaac, and ManiSkill.
+  <br>
+</div>
+
+<hr />
+<h3 id="updates">Updates<a class="headerlink" href="#updates" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>[2026/06/12]</strong> 🔥 <a href="https://github.com/allenai/molmospaces/releases/tag/v0.2.0"><strong>MolmoSpaces v0.2.0</strong></a> is out, with significantly better usability, included tutorials, and more! Check out the changelog for more information.</li>
+<li><strong>[2026/03/24]</strong> 🔥 <a href="https://allenai.org/blog/molmobot-robot-manipulation"><strong>MolmoBot-Datagen</strong></a> Code for scripted planners, data generation, and benchmark creation.</li>
+<li><strong>[2026/02/27]</strong> 🔥 <a href="https://molmospaces.allen.ai/leaderboard"><strong>Leaderboards</strong></a> are out.</li>
+<li><strong>[2026/02/11]</strong> 🔥 <a href="https://github.com/allenai/molmospaces/blob/main/docs/assets.md#assets-and-resource-manager"><strong>Datasets</strong></a> for assets and scenes in MJCF and USDa format.</li>
+<li><strong>[2026/02/11]</strong> 🔥 <a href="https://github.com/allenai/molmospaces/blob/main/molmo_spaces/evaluation/README.md"><strong>Benchmark</strong></a> for 8 tasks, including <em>pick</em>, <em>open</em>, and <em>close</em> tasks in JSONs.</li>
+<li><strong>[2026/02/11]</strong> 🔥 <strong>MolmoSpaces</strong> Code for scene conversion, grasp generation, teleoperation, and benchmark evaluation.</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>Installing <code>molmospaces</code> is easy!</p>
+<p>First, clone the project. </p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:allenai/molmospaces.git
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>molmospaces
+</code></pre></div>
+<p>Then, set up the virtual environment and install.</p>
+<blockquote>
+<p>Note: If you want to use the debug viewer on macOS you need to use conda or a Homebrew Python. This is because <code>mjpython</code> used by the debug viewer requires a shared <code>libpython3.11.dylib</code>, which <code>uv</code>'s standalone CPython does not ship.</p>
+</blockquote>
+<p>With conda:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>mlspaces<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>conda<span class="w"> </span>activate<span class="w"> </span>mlspaces
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[mujoco]&quot;</span>
+</code></pre></div>
+<p>Or with <code>uv</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.11<span class="w"> </span>.venv
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[mujoco]&quot;</span>
+</code></pre></div>
+<p>One of the following options must be provided:
+- <code>mujoco</code> to use the classic MuJoCo renderer
+- <code>mujoco-filament</code> to use the improved Filament renderer for MuJoCo</p>
+<p>The optional installation options are:
+- <code>dev</code> installs dependencies for code development.
+- <code>grasp</code> installs dependencies for the grasp generation pipeline.
+- <code>housegen</code> installs dependencies for the house generation pipeline from iTHOR, ProcTHOR, or Holodeck JSONs.
+- <code>curobo</code> installs CuRobo for GPU-accelerated planning.</p>
+<p>You may wish to specify some <a href="#environment-variables">environment variables</a> to configure behavior.
+Currently <code>molmospaces</code> supports Linux and Mac.</p>
+<p>We provide simulation assets for Mujoco, Isaac, and ManiSkill.
+Data generation and benchmarking are only supported for Mujoco.</p>
+<h3 id="installing-the-filament-renderer-optional">Installing the Filament renderer (optional)<a class="headerlink" href="#installing-the-filament-renderer-optional" title="Permanent link">&para;</a></h3>
+<p>If using <code>uv</code>, simply run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>mujoco-filament<span class="o">]</span>
+</code></pre></div>
+<p>Otherwise, first install <code>mujoco-filament</code> before installing this project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-i<span class="w"> </span>https://test.pypi.org/simple/<span class="w"> </span>mujoco-filament
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>mujoco-filament<span class="o">]</span>
+</code></pre></div>
+<h3 id="installing-curobo-optional-used-only-for-rb-y1-tasks">Installing cuRobo (optional, used only for RB-Y1 tasks)<a class="headerlink" href="#installing-curobo-optional-used-only-for-rb-y1-tasks" title="Permanent link">&para;</a></h3>
+<p>For cuRobo support, inside your conda environment, install with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Install CUDA toolkit and build tools (conda-forge for toolkit, nvidia channel for headers)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>cuda-toolkit<span class="o">=</span><span class="m">12</span>.8<span class="w"> </span>ninja<span class="w"> </span>evdev<span class="w"> </span>cuda-nvcc<span class="w"> </span>cuda-cudart-dev<span class="w"> </span>-n<span class="w"> </span>mlspaces
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Install torch with CUDA 12.8 support BEFORE installing cuRobo (Ignore warnings after this step)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;torch~=2.7.0&quot;</span><span class="w"> </span><span class="s2">&quot;torchvision&gt;=0.22.0,&lt;0.23.0&quot;</span><span class="w"> </span>--index-url<span class="w"> </span>https://download.pytorch.org/whl/cu128
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Then compile and install the project against the installed torch</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CUDA_HOME</span><span class="o">=</span><span class="nv">$CONDA_PREFIX</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CPATH</span><span class="o">=</span><span class="k">$(</span>dirname<span class="w"> </span><span class="k">$(</span>find<span class="w"> </span><span class="nv">$CONDA_PREFIX</span><span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;cuda_runtime_api.h&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="k">))</span>:<span class="nv">$CPATH</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TORCH_CUDA_ARCH_LIST</span><span class="o">=</span><span class="s2">&quot;7.5;8.0;8.6;8.9;9.0&quot;</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[mujoco,curobo]&quot;</span>
+</code></pre></div>
+<h3 id="set-environment-variables-optional">Set Environment Variables (Optional)<a class="headerlink" href="#set-environment-variables-optional" title="Permanent link">&para;</a></h3>
+<p>You may wish to specify some environment variables to configure behavior.
+Environment variables beginning with the <code>MLSPACES</code> prefix can be used to customize MolmoSpaces behavior.</p>
+<table>
+<thead>
+<tr>
+<th>Environment Variable</th>
+<th>Effect</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MLSPACES_ASSETS_DIR</code></td>
+<td>Where to place downloaded assets</td>
+<td><code>~/.cache/molmospaces/assets/&lt;install-hash&gt;</code></td>
+</tr>
+<tr>
+<td><code>MLSPACES_FORCE_INSTALL</code></td>
+<td>Override existing assets</td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>MLSPACES_PINNED_ASSETS_FILE</code></td>
+<td>A <code>.json</code> file containing pinned versions for each asset, used to override the versions specified in <a href="molmo_spaces/molmo_spaces_constants.py">molmo_spaces_constants.py</a>.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>MUJOCO_EGL_DEVICE_ID</code></td>
+<td>The rendering device; indices do not always match <code>CUDA_VISIBLE_DEVICES</code>. See <a href="https://github.com/allenai/molmospaces/issues/66">here</a> for details.</td>
+<td><code>0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="quick-test">Quick Test<a class="headerlink" href="#quick-test" title="Permanent link">&para;</a></h3>
+<p>Run a quick sample of data generation. For machines with a display, use the <code>--viewer</code> option to launch the passive debug viewer (push "w" for wire-frame view to see the robot more easily; more details <a href="#mujoco-viewer-tips">here</a>). Assets should be downloaded automatically for all runs.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Linux</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>python<span class="w"> </span>scripts/datagen/run_pipeline.py<span class="w"> </span>--viewer<span class="w"> </span>--seed<span class="w"> </span><span class="m">1</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="c1"># Mac</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>mjpython<span class="w"> </span>scripts/datagen/run_pipeline.py<span class="w"> </span>--viewer<span class="w"> </span>--seed<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<p>The MolmoSpaces codebase has three entry points for data generation, evaluation, and debugging. The two initial entry points make use of experiment configs to configure runs. The third is more easily modifiable, with some logic for constructing runs on the fly; however, constructing experiments is complicated, and not all permutations have been tested fully.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>molmo_spaces/evaluation/eval_main.py<span class="w">  </span><span class="c1"># evaluation</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>molmo_spaces/data_generation/main.py<span class="w">  </span><span class="c1"># data generation</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>scripts/datagen/run_pipeline.py<span class="w">       </span><span class="c1"># debugging</span>
+</code></pre></div>
+<p>This readme contains more information on <a href="#experiment-configs">experiment configs</a> as well as the other entry points; for those, please see the <a href="#benchmarks-and-evaluations">evaluation</a> and <a href="#data-generation">data generation</a> sections of this readme. </p>
+<h2 id="molmospaces-assets">MolmoSpaces Assets<a class="headerlink" href="#molmospaces-assets" title="Permanent link">&para;</a></h2>
+<p>Molmospaces provides scenes, objects, robots, and benchmarks. These can be downloaded using an asset manager to automatically fetch and version-control asset dependencies. A number of assets are provided; this overview explains the naming of the assets in code:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Code Name</th>
+<th>Paper Name</th>
+<th>Description</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>objects</td>
+<td>thor</td>
+<td></td>
+<td>hand-crafted indoor assets</td>
+<td>~2k</td>
+</tr>
+<tr>
+<td>objects</td>
+<td>objaverse</td>
+<td></td>
+<td>converted Objaverse assets</td>
+<td>~129k</td>
+</tr>
+<tr>
+<td>scenes</td>
+<td>ithor</td>
+<td>MSCrafted</td>
+<td>hand-crafted, many articulated assets</td>
+<td>120</td>
+</tr>
+<tr>
+<td>scenes</td>
+<td>procthor-10k</td>
+<td>MSProc</td>
+<td>procedurally generated with THOR assets</td>
+<td>~120k</td>
+</tr>
+<tr>
+<td>scenes</td>
+<td>procthor-objaverse</td>
+<td>MSProcObja</td>
+<td>procedurally generated with Objaverse assets</td>
+<td>~110k</td>
+</tr>
+<tr>
+<td>scenes</td>
+<td>holodeck</td>
+<td>MSMultiType</td>
+<td>LLM generated with Objaverse assets</td>
+<td>~110k</td>
+</tr>
+<tr>
+<td>benchmark</td>
+<td>molmospaces_bench_v1</td>
+<td>MS-Bench v1</td>
+<td>base benchmark for atomic tasks</td>
+<td></td>
+</tr>
+<tr>
+<td>benchmark</td>
+<td>molmospaces_bench_v2</td>
+<td>MS-Bench v2</td>
+<td>extended benchmark for atomic tasks</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Please refer to <a href="./docs/assets.md">here</a> for instructions to set up data directories, but you shouldn't need to manually manage any dependencies beyond setting the appropriate environment variables. If you are interested only in data generation and evaluation using MuJoCo, you can skip the rest of this section.</p>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>The documentation for MolmoSpaces can be found <a href="https://allenai.github.io/molmospaces/">here</a>. </p>
+<p>Additional documentation for dependencies are listed below:</p>
+<table>
+<thead>
+<tr>
+<th>Simulator</th>
+<th>Documentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MuJoCo</td>
+<td><a href="docs/assets.md#mujoco-assets">MuJoCo Assets Quick Start Instructions</a></td>
+</tr>
+<tr>
+<td>Isaac-Sim</td>
+<td><a href="molmo_spaces_isaac/README.md">Isaac-Sim Assets Quick Start Instructions</a></td>
+</tr>
+<tr>
+<td>ManiSkill</td>
+<td><a href="molmo_spaces_maniskill/README.md">ManiSkill Assets Quick Start Instructions</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="experiment-configs">Experiment Configs<a class="headerlink" href="#experiment-configs" title="Permanent link">&para;</a></h2>
+<p>In MolmoSpaces all runs, whether for data generation or evaluation of policies, are defined by experiment configs.
+The base experiment config class is called <code>MlSpacesExpConfig</code> and is located in <code>molmo_spaces/configs/abstract_exp_config.py</code>, it contains documentation on configuring experiments.</p>
+<p>To see a list of all currently defined experiment configs, run this:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">molmo_spaces.data_generation.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">auto_import_configs</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">molmo_spaces.data_generation.config_registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_available_configs</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">auto_import_configs</span><span class="p">()</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">list_available_configs</span><span class="p">())</span>
+</code></pre></div></p>
+<h2 id="benchmarks-and-evaluations">Benchmarks and Evaluations<a class="headerlink" href="#benchmarks-and-evaluations" title="Permanent link">&para;</a></h2>
+<p>Currently, installing and running the benchmark is only supported in the MuJoCo simulator.</p>
+<h3 id="installing-benchmarks">Installing Benchmarks<a class="headerlink" href="#installing-benchmarks" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MLSPACES_ASSETS_DIR</span><span class="o">=</span>/path/to/symlink/resources
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>python<span class="w"> </span>-m<span class="w"> </span>molmo_spaces.molmo_spaces_constants
+</code></pre></div>
+<h3 id="running-benchmarks">Running Benchmarks<a class="headerlink" href="#running-benchmarks" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>python<span class="w"> </span>molmo_spaces/evaluation/eval_main.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span>molmo_spaces.evaluation.configs.evaluation_configs:PiPolicyEvalConfig<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span>--benchmark_dir<span class="w"> </span>assets/bench/path-to-benchmark.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span>--checkpoint_path<span class="w"> </span>&lt;path/to/checkpoint/pi0_fast_droid_jointpos&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span>--task_horizon_steps<span class="w"> </span><span class="m">500</span><span class="w">  </span><span class="c1"># optional (defaults to benchmark value)</span>
+</code></pre></div>
+<p>For more information, please refer to an instruction in the <a href="molmo_spaces/evaluation/README.md">benchmark</a>.</p>
+<h2 id="data-generation">Data Generation<a class="headerlink" href="#data-generation" title="Permanent link">&para;</a></h2>
+<p>Our data generation system makes use of predefined experiment configs that specify scenes, robots, tasks, and more.
+Example experiment configs can be found in, e.g., <code>molmo_spaces/data_generation/config/object_manipulation_datagen_configs.py</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python<span class="w"> </span>molmo_spaces/data_generation/main.py<span class="w"> </span>FrankaPickOmniCamConfig
+</code></pre></div>
+<h2 id="teleop-input">Teleop Input<a class="headerlink" href="#teleop-input" title="Permanent link">&para;</a></h2>
+<p>To control a robot via phone-based teleoperation, do the following (only iPhones supported).</p>
+<ol>
+<li>Install TeleDex from the App Store; see <a href="https://apps.apple.com/us/app/teledex/id6612039501">here</a>.</li>
+<li>Run the datagen pipeline with the teleop policy
+   <code>bash
+   python molmo_spaces/evaluation/eval_main.py \
+    molmo_spaces.evaluation.configs.evaluation_configs:TeleopPolicyEvalConfig \
+    --benchmark_dir assets/bench/path-to-benchmark.json \
+    --task_horizon_steps 1000</code></li>
+<li>Scan the QR code that shows up using the app (or manually enter the IP port). Example terminal output:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>TeleDex<span class="w"> </span>Session<span class="w"> </span>Starting<span class="w"> </span>on<span class="w"> </span>port<span class="w"> </span><span class="m">8888</span>...
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Session<span class="w"> </span>Started.<span class="w"> </span>Details:
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>IP<span class="w"> </span>Address:<span class="w"> </span>xxx.xxx.xx.xxx
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Port:<span class="w"> </span><span class="m">8888</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>Waiting<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>device<span class="w"> </span>to<span class="w"> </span>connect...
+</code></pre></div></li>
+<li>
+<p>Start teleoperating!</p>
+</li>
+<li>
+<p>Click the toggle to grasp.</p>
+</li>
+<li>Click the button to go to the next episode.</li>
+</ol>
+<h2 id="related-repositories">Related Repositories:<a class="headerlink" href="#related-repositories" title="Permanent link">&para;</a></h2>
+<p>The repositories related to this project can be found here:</p>
+<table>
+<thead>
+<tr>
+<th>Repository</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/allenai/ai2_robot_infra">ai2_robot_infra</a></td>
+<td>Real robot infrastructure and utilities for experiments</td>
+</tr>
+<tr>
+<td><a href="https://github.com/allenai/MolmoBot">MolmoBot</a></td>
+<td>MolmoBot policy code</td>
+</tr>
+<tr>
+<td><a href="https://github.com/allenai/curobo">curobo</a></td>
+<td>Ai2 cuRobo branch</td>
+</tr>
+</tbody>
+</table>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
+<h3 id="code-formatting">Code Formatting<a class="headerlink" href="#code-formatting" title="Permanent link">&para;</a></h3>
+<p>Before committing, ensure your code is formatted:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>ruff<span class="w"> </span>format<span class="w"> </span>.
+</code></pre></div></p>
+<h3 id="unit-testing">Unit Testing<a class="headerlink" href="#unit-testing" title="Permanent link">&para;</a></h3>
+<p>We use pytest for integration testing.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>pytest<span class="w"> </span>mlspaces_tests/data_generation
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>.<span class="w"> </span>pytest<span class="w"> </span>mlspaces_tests/data_generation_curobo<span class="w">  </span><span class="c1"># run tests that require curobo</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To debug failing tests, use <code>--log-cli-level DEBUG</code></p>
+</div>
+<p>For setting up self-hosted CI runners or building Docker images for Beaker, see <strong><a href="beaker_scripts/RUNNER_SETUP.md">beaker_scripts/RUNNER_SETUP.md</a></strong>.</p>
+<h3 id="use-with-cursorvscode">Use with Cursor/VSCode<a class="headerlink" href="#use-with-cursorvscode" title="Permanent link">&para;</a></h3>
+<p>Generating type stubs for mujoco and open3d and saving them in the <code>typings</code> folder
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>pybind11-stubgen<span class="w"> </span>mujoco<span class="w"> </span>-o<span class="w"> </span>./typings/
+</code></pre></div></p>
+<h3 id="mujoco-viewer-tips">Mujoco Viewer Tips<a class="headerlink" href="#mujoco-viewer-tips" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Documentation for the viewer can be found <a href="https://mujoco.readthedocs.io/en/stable/programming/samples.html#sasimulate">here</a> there are many keyboard shortcuts.</li>
+<li>If you have red boxes on top of your objects, go to the left panel and toggle <code>Group Enable &gt; Site groups &gt;  Site 0</code></li>
+<li>Interact with objects by double-clicking &gt; Ctrl + right mouse drag. (only with active viewers, not passive ones)</li>
+</ol>
+<h2 id="robot-conventions">Robot Conventions<a class="headerlink" href="#robot-conventions" title="Permanent link">&para;</a></h2>
+<p>Robot base conventions: +x=forward, +y=left, +z=up</p>
+<p>Robot parallel-jaw gripper conventions: +z=forward, fingers open along the y axis</p>
+<p><img src="docs/images/robot_axis_conventions.png" width="480px"></p>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
+<p>The codebase is licensed under <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache 2.0</a>.
+The public MolmoSpaces data endpoint is available <a href="https://pub-3555e9bb2d304fab9c6c79819e48aa40.r2.dev">here</a>. The public MolmoSpaces Isaac data endpoint is available <a href="https://pub-96496c3574b24d0c98b235219711d359.r2.dev">here</a>. Both datasets are also available for download on <a href="https://huggingface.co/datasets/allenai/molmospaces">HuggingFace</a>. The Objaverse subsets in these buckets are licensed under <a href="https://opendatacommons.org/licenses/by/1-0/">ODC-BY 1.0</a>. All other data subsets are licensed under <a href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>.
+The artifacts are intended for research and educational use in accordance with <a href="https://allenai.org/responsible-use">Ai2's Responsible Use Guidelines</a>.</p>
+<h2 id="data-attributions">Data Attributions<a class="headerlink" href="#data-attributions" title="Permanent link">&para;</a></h2>
+<p>The XML files have been modified from the original versions provided by the following sources:
+- <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_fr3">mujoco_menagerie / franka_fr3</a> - Developed by Franka Robotics
+- <a href="https://github.com/google-deepmind/mujoco_menagerie/tree/main/robotiq_2f85_v4">mujoco_menagerie / robotiq_2f85_v4</a> - Copyright (c) 2013, ROS-Industrial
+- <a href="https://github.com/RainbowRobotics/rby1-sdk">Rainbow Robotics / rby1-sdk</a> - Copyright 2024-2025 Rainbow Robotics
+- <a href="https://github.com/jeffacce/cap-policy">RUM Gripper</a> - Copyright (c) 2026 NYU Generalizable Robotics and AI Lab (GRAIL)
+- <a href="https://github.com/i2rt-robotics/i2rt">I2RT Robotics / i2rt Python API</a> - Copyright (c) I2RT Robotics</p>
+<h2 id="citing">Citing<a class="headerlink" href="#citing" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>@article{kim2026molmospaces,
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  title={MolmoSpaces: A Large-Scale Open Ecosystem for Robot Navigation and Manipulation},
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  author={Kim, Yejin and Pumacay, Wilbert and Rayyan, Omar and Argus, Max and Han, Winson and VanderBilt, Eli and Salvador, Jordi and Deshpande, Abhay and Hendrix, Rose and Jauhri, Snehal and others},
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  journal={arXiv preprint arXiv:2602.11337},
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  year={2026}
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>}
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>@misc{deshpande2026molmobot,
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>      title={MolmoB0T: Large-Scale Simulation Enables Zero-Shot Manipulation},
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>      author={Abhay Deshpande and Maya Guru and Rose Hendrix and Snehal Jauhri and Ainaz Eftekhar and Rohun Tripathi and Max Argus and Jordi Salvador and Haoquan Fang and Matthew Wallingford and Wilbert Pumacay and Yejin Kim and Quinn Pfeifer and Ying-Chun Lee and Piper Wolters and Omar Rayyan and Mingtong Zhang and Jiafei Duan and Karen Farley and Winson Han and Eli Vanderbilt and Dieter Fox and Ali Farhadi and Georgia Chalvatzaki and Dhruv Shah and Ranjay Krishna},
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>      year={2026},
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>      eprint={2603.16861},
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>      archivePrefix={arXiv},
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>      primaryClass={cs.RO},
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>      url={https://arxiv.org/abs/2603.16861},
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>}
+</code></pre></div>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 27, 2026 13:14:06 UTC"><span class="timeago" datetime="2026-07-27T13:14:06+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 27, 2026 13:14:06 UTC">2026-07-27</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 27, 2026 08:32:27 UTC"><span class="timeago" datetime="2026-07-27T08:32:27+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 27, 2026 08:32:27 UTC">2026-07-27</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Allen Institute for Artificial Intelligence
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/timeago.min.js"></script>
+      
+        <script src="../js/timeago_mkdocs_material.js"></script>
+      
+    
+  </body>
+</html>
