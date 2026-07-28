@@ -1339,6 +1339,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#environment-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#public-code" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1357,6 +1368,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Minimal run sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#environment-requirements_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1411,6 +1439,12 @@
 <h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">&para;</a></h2>
 <p>This workline provides human-facing browser visualization and keyboard teleoperation infrastructure for bimanual YAM experiments in MolmoSpaces.</p>
 <p>It is a tooling/infrastructure workline, not a standalone task-success result.</p>
+<h2 id="environment-requirements">Environment requirements<a class="headerlink" href="#environment-requirements" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>GPU rendering is required</strong> for usable frame rates. CPU software rendering (OSMesa) with three cameras gives ~3 FPS.</li>
+<li><strong>NVIDIA EGL headless rendering</strong> is the tested configuration: Linux + NVIDIA GPU + proprietary driver + EGL vendor (<code>/usr/share/glvnd/egl_vendor.d/10_nvidia.json</code>). The teleop automatically uses <code>MUJOCO_GL=egl</code> via MolmoSpaces.</li>
+<li><strong>WSL2 is not supported</strong>. WSL2 uses Mesa EGL, which does not expose <code>EGL_EXT_platform_device</code>.</li>
+</ul>
 <h2 id="public-code">Public code<a class="headerlink" href="#public-code" title="Permanent link">&para;</a></h2>
 <p>Code directory: <a href="../../../src/bimanual_yam/"><code>src/bimanual_yam/</code></a></p>
 <p>Key scripts:</p>
@@ -1421,26 +1455,35 @@
 <li><code>scripted_bimanual_source_demo.py</code> — scripted diagnostic route for bimanual source-demo attempts.</li>
 </ul>
 <h2 id="minimal-run-sequence">Minimal run sequence<a class="headerlink" href="#minimal-run-sequence" title="Permanent link">&para;</a></h2>
-<p>After standard setup, inspect script options:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>src/bimanual_yam/browser_keyboard_teleop.py<span class="w"> </span>--help
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>src/bimanual_yam/validate_tabletop_initialization.py<span class="w"> </span>--help
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>python<span class="w"> </span>src/bimanual_yam/check_dual_object_reachability.py<span class="w"> </span>--help
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>python<span class="w"> </span>src/bimanual_yam/scripted_bimanual_source_demo.py<span class="w"> </span>--help
+<h3 id="environment-requirements_1">Environment requirements<a class="headerlink" href="#environment-requirements_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>GPU rendering is required</strong>. CPU rendering (OSMesa) with three cameras gives ~3 FPS.</li>
+<li><strong>NVIDIA EGL headless rendering</strong> is the tested configuration: Linux + NVIDIA GPU + proprietary driver + <code>/usr/share/glvnd/egl_vendor.d/10_nvidia.json</code>.</li>
+<li><strong>WSL2 is not supported</strong>. WSL2 Mesa EGL does not expose <code>EGL_EXT_platform_device</code>.</li>
+<li><strong>Remote GPU server</strong>: set up an SSH tunnel before opening the browser:
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># On your local machine:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">8765</span>:127.0.0.1:8765<span class="w"> </span>user@your-gpu-server
+</code></pre></div></li>
+</ul>
+<p>Inspect script options:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>src/bimanual_yam/browser_keyboard_teleop.py<span class="w"> </span>--help
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python<span class="w"> </span>src/bimanual_yam/validate_tabletop_initialization.py<span class="w"> </span>--help
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>python<span class="w"> </span>src/bimanual_yam/check_dual_object_reachability.py<span class="w"> </span>--help
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>python<span class="w"> </span>src/bimanual_yam/scripted_bimanual_source_demo.py<span class="w"> </span>--help
 </code></pre></div>
-<p>Recommended local teleoperation command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python<span class="w"> </span>src/bimanual_yam/browser_keyboard_teleop.py<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">8765</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--house-index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span>--seed<span class="w"> </span><span class="m">110</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span>--render-fps<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>--control-hz<span class="w"> </span><span class="m">25</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--input-timeout-ms<span class="w"> </span><span class="m">400</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span>--initialization-max-attempts<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">  </span>--initialization-report<span class="w"> </span>runtime/bimanual_yam_initialization_report.json
+<p>Recommended teleoperation command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>src/bimanual_yam/browser_keyboard_teleop.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>--host<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>--port<span class="w"> </span><span class="m">8765</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>--house-index<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span>--seed<span class="w"> </span><span class="m">110</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span>--render-fps<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span>--control-hz<span class="w"> </span><span class="m">25</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span>--input-timeout-ms<span class="w"> </span><span class="m">400</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span>--initialization-max-attempts<span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span>--initialization-report<span class="w"> </span>runtime/bimanual_yam_initialization_report.json
 </code></pre></div>
-<p>Open <code>http://127.0.0.1:8765</code> after the terminal prints the local teleoperation URL.</p>
-<p>Actual simulator runs require MolmoSpaces assets and a display/browser-capable environment.</p>
+<p>Open <code>http://127.0.0.1:8765</code> after the terminal prints the teleoperation URL.</p>
 <h2 id="public-evidence">Public evidence<a class="headerlink" href="#public-evidence" title="Permanent link">&para;</a></h2>
 <p>Related runtime inventory: <a href="../../../results/workline_index/ithor_bimanual_yam.md"><code>results/workline_index/ithor_bimanual_yam.md</code></a>.</p>
 <h2 id="evidence-boundary">Evidence boundary<a class="headerlink" href="#evidence-boundary" title="Permanent link">&para;</a></h2>
@@ -1468,7 +1511,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 28, 2026 08:18:09 UTC"><span class="timeago" datetime="2026-07-28T08:18:09+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 28, 2026 08:18:09 UTC">2026-07-28</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 28, 2026 09:20:45 UTC"><span class="timeago" datetime="2026-07-28T09:20:45+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 28, 2026 09:20:45 UTC">2026-07-28</span>
   </span>
 
     
