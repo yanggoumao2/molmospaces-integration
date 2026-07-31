@@ -1328,6 +1328,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#reproduction-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproduction Boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#setup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1434,6 +1445,14 @@
 </tbody>
 </table>
 <p>Large runtime data (HDF5, videos, logs) are excluded from Git.</p>
+<h2 id="reproduction-boundary">Reproduction Boundary<a class="headerlink" href="#reproduction-boundary" title="Permanent link">&para;</a></h2>
+<p>This portfolio includes multiple worklines that do not share the same runtime requirements.</p>
+<ul>
+<li>The public <code>src/pnp/</code> MimicGen Pick-and-Place path uses MolmoBot source trajectories and the integration scripts in this repository.</li>
+<li>The official RB-Y1 scripted/planner datagen path uses <code>python -m molmo_spaces.data_generation.main ...</code> with configs such as <code>RBY1PickDataGenConfig</code> and <code>RBY1PickAndPlaceDataGenConfig</code>; this is distinct from the public <code>src/pnp/</code> integration scripts.</li>
+<li>Bimanual browser teleop is a separate infrastructure path again.</li>
+</ul>
+<p>A fresh <code>pip install -e ".[mujoco]"</code> setup is enough for the public <code>src/pnp/</code> worklines, but it is not enough for the RB-Y1 scripted/planner datagen configs. Those require <code>curobo</code> and should follow the dedicated CuRobo notes in the top-level <a href="../../README.md"><code>README.md</code></a>.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yanggoumao2/molmospaces-integration.git
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>molmospaces-integration
@@ -1447,6 +1466,7 @@
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIMICGEN_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/mimicgen&quot;</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOMIMIC_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/robomimic&quot;</span>
 </code></pre></div>
+<p>If you specifically need official RB-Y1 scripted/planner expert generation, install and verify CuRobo before trying <code>RBY1PickDataGenConfig</code> or <code>RBY1PickAndPlaceDataGenConfig</code>, then verify planner-server connectivity for your own environment.</p>
 
 
 
@@ -1469,7 +1489,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 27, 2026 14:01:54 UTC"><span class="timeago" datetime="2026-07-27T14:01:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 27, 2026 14:01:54 UTC">2026-07-27</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 29, 2026 03:54:30 UTC"><span class="timeago" datetime="2026-07-29T03:54:30+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 29, 2026 03:54:30 UTC">2026-07-29</span>
   </span>
 
     
