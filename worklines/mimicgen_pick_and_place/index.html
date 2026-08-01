@@ -1393,6 +1393,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#fixed-pool-source-demo-hdf5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed-pool source-demo HDF5
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixed-pool-source-build-record-2026-08-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed-pool source build record (2026-08-01)
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1433,6 +1455,7 @@
 <li><code>parse_source_dataset.py</code> — parse the source HDF5 with MimicGen compatibility checks.</li>
 <li><code>generate_pick_place_rollout.py</code> — run a generated trajectory back in MolmoSpaces.</li>
 <li><code>collect_uniform_successes.sh</code> and <code>collect_unique_highyield_successes.sh</code> — collector entrypoints used for larger sweeps.</li>
+<li><code>run_fixedpool_source_hdf5.sh</code> — reproducible fixed-pool source-demo build: strict selection and deduplication, deterministic replay, robomimic HDF5 conversion, and schema validation.</li>
 </ul>
 <h2 id="minimal-run-sequence">Minimal run sequence<a class="headerlink" href="#minimal-run-sequence" title="Permanent link">&para;</a></h2>
 <p>After the standard clone setup in <a href="../"><code>../README.md</code></a>, place the official MolmoBot Pick-and-Place shard under <code>runtime/</code>. Then use the top-level README workflow or run the scripts in this order:</p>
@@ -1457,6 +1480,18 @@
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--franka-datagen-root<span class="w"> </span>/path/to/datagen/pick_and_place_planner_v1
 </code></pre></div>
 <p>Franka mode recursively reads <code>house_*/trajectories_batch_*.h5</code>, requires complete phases <code>0..9</code>, terminal/persistent task success and the replay fields used downstream, and rejects duplicate initial-state/action fingerprints. Its manifest remains compatible with the existing replay, datagen-info, robomimic conversion, and MimicGen generation path. Treat <code>samples_per_house</code> only as a requested workload and verify actual HDF5 success counts. The source provenance is synthetic scripted-IK planner expert, not human or RB-Y1 planner-server data.</p>
+<h2 id="fixed-pool-source-demo-hdf5">Fixed-pool source-demo HDF5<a class="headerlink" href="#fixed-pool-source-demo-hdf5" title="Permanent link">&para;</a></h2>
+<p>For a completed fixed pool, use the public one-command source conversion entrypoint rather than treating the raw <code>trajectories_batch_*.h5</code> files as a MimicGen input:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_PNP_WORKDIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/runtime/fixedpool_source&quot;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bash<span class="w"> </span>src/pnp/run_fixedpool_source_hdf5.sh<span class="w"> </span>/path/to/pick_and_place_planner_v1<span class="w"> </span><span class="m">43</span>
+</code></pre></div>
+<p>The entrypoint defaults to <code>PNP_FIXEDPOOL_HOUSE_ID=1716</code> and <code>PNP_FIXEDPOOL_RUN_NAME_PREFIX=potato_bowl_1716_seed</code>, preventing other houses or historical smoke runs in a shared datagen root from entering the source set. It writes an independent source manifest, replay records, a robomimic HDF5 with <code>data/demo_*</code>, and schema-validation output below <code>MOLMOSPACES_PNP_WORKDIR</code>. It never overwrites the raw datagen HDF5 or its videos. A completed conversion proves source-format availability only; generated MimicGen rollouts still require their own task-success and video gates.</p>
+<h2 id="fixed-pool-source-build-record-2026-08-01">Fixed-pool source build record (2026-08-01)<a class="headerlink" href="#fixed-pool-source-build-record-2026-08-01" title="Permanent link">&para;</a></h2>
+<p>The completed formal source set is restricted to the seven <code>potato_bowl_1716_seed*</code> run roots in house <code>1716</code>, excluding historical smoke and gate runs. It contains 43 trajectories after exact initial-state/action fingerprint deduplication. Deterministic replay and robomimic conversion produced the runtime-only artifact below; generated data is intentionally ignored by Git.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>runtime/fixedpool_potato_bowl_1716_source/artifacts/seeds/
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  robomimic_pnp_fixedpool_manual_review43.hdf5
+</code></pre></div>
+<p>Validation passed for 43 <code>data/demo_*</code> groups, 7,582 total action samples, finite numeric arrays, action/observation alignment, and source provenance spanning all seven formal run roots. Automatic replay persistence accepted 40 trajectories. Three final-success trajectories (manifest source indices <code>6</code>, <code>19</code>, and <code>29</code>) had transient persistence-flag drops; Kunyu reviewed the corresponding <code>exo_camera_1</code> videos and accepted them on 2026-08-01. The converted HDF5 explicitly records those three per-demo manual-review exceptions and the root-level exception list. This evidence establishes a usable robomimic/MimicGen source dataset, not generated MimicGen rollout success.</p>
 
 
 
@@ -1479,7 +1514,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 31, 2026 02:20:02 UTC"><span class="timeago" datetime="2026-07-31T02:20:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 31, 2026 02:20:02 UTC">2026-07-31</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 1, 2026 12:14:54 UTC"><span class="timeago" datetime="2026-08-01T12:14:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 1, 2026 12:14:54 UTC">2026-08-01</span>
   </span>
 
     
