@@ -1328,10 +1328,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose" class="md-nav__link">
+  <a href="#scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Purpose
+        Scope
       
     </span>
   </a>
@@ -1339,10 +1339,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#public-code" class="md-nav__link">
+  <a href="#active-entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Public code
+        Active Entry Points
       
     </span>
   </a>
@@ -1350,21 +1350,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#minimal-run-sequence" class="md-nav__link">
+  <a href="#minimal-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal run sequence
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#public-evidence" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Public evidence
+        Minimal Commands
       
     </span>
   </a>
@@ -1375,40 +1364,7 @@
   <a href="#evidence-boundary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evidence boundary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#newly-generated-franka-hdf5-input" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Newly generated Franka HDF5 input
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fixed-pool-source-demo-hdf5" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fixed-pool source-demo HDF5
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#fixed-pool-source-build-record-2026-08-01" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Fixed-pool source build record (2026-08-01)
+        Evidence Boundary
       
     </span>
   </a>
@@ -1441,57 +1397,29 @@
 
 
 <h1 id="mimicgen-pick-and-place-workline">MimicGen Pick-and-Place Workline<a class="headerlink" href="#mimicgen-pick-and-place-workline" title="Permanent link">&para;</a></h1>
-<h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">&para;</a></h2>
-<p>This is the primary active public workline. It connects MolmoSpaces Pick-and-Place rollouts to the MimicGen / robomimic data format, then executes generated trajectories back in the MolmoSpaces simulator.</p>
-<h2 id="public-code">Public code<a class="headerlink" href="#public-code" title="Permanent link">&para;</a></h2>
-<p>Main code directory: <a href="../../../src/pnp/"><code>src/pnp/</code></a></p>
-<p>Key scripts:</p>
+<h2 id="scope">Scope<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h2>
+<p>This is the active Franka Droid / Pick-and-Place / in-process scripted-IK MimicGen workline. It uses replay-verified source trajectories, an independently sampled target-layout manifest, and real MolmoSpaces rollouts for acceptance. It is separate from RB-Y1 CuRobo planner datagen and from the archived broad 50-demo diagnostic.</p>
+<h2 id="active-entry-points">Active Entry Points<a class="headerlink" href="#active-entry-points" title="Permanent link">&para;</a></h2>
+<p>The active code is intentionally limited to <a href="../../../src/pnp/"><code>src/pnp/</code></a>:</p>
 <ul>
-<li><code>inspect_source_candidates.py</code> — inspect candidate source demonstrations from the official MolmoBot shard.</li>
-<li><code>select_pick_place_seeds.py</code> — select a source set.</li>
-<li><code>replay_source_episode.py</code> — replay a source episode in MolmoSpaces.</li>
-<li><code>collect_datagen_info.py</code> and <code>collect_homogeneous_datagen_info.py</code> — collect MimicGen datagen information.</li>
-<li><code>convert_seed_set_to_robomimic.py</code> and <code>convert_single_seed_to_robomimic.py</code> — convert source trajectories to robomimic-style HDF5.</li>
-<li><code>parse_source_dataset.py</code> — parse the source HDF5 with MimicGen compatibility checks.</li>
-<li><code>generate_pick_place_rollout.py</code> — run a generated trajectory back in MolmoSpaces.</li>
-<li><code>collect_uniform_successes.sh</code> and <code>collect_unique_highyield_successes.sh</code> — collector entrypoints used for larger sweeps.</li>
-<li><code>run_fixedpool_source_hdf5.sh</code> — reproducible fixed-pool source-demo build: strict selection and deduplication, deterministic replay, robomimic HDF5 conversion, and schema validation.</li>
+<li><code>run_source_hdf5_pipeline.py</code>: parameterized source candidate selection, replay, conversion, and validation.</li>
+<li><code>run_generation.py</code>: parameterized MimicGen generation runner; official runs use <code>--mode per-subtask</code>.</li>
+<li><code>generate_pick_place_rollout.py</code>: one simulator rollout primitive.</li>
+<li><code>select_source_pool.py</code>, <code>replay_source_candidate.py</code>, <code>convert_source_hdf5.py</code>, and <code>validate_robomimic_source_hdf5.py</code>: the source-HDF5 pipeline stages.</li>
+<li><code>sample_fixedbase_target_manifest.py</code> and <code>validate_fixedbase_target_manifest.py</code>: target-layout stages.</li>
 </ul>
-<h2 id="minimal-run-sequence">Minimal run sequence<a class="headerlink" href="#minimal-run-sequence" title="Permanent link">&para;</a></h2>
-<p>After the standard clone setup in <a href="../"><code>../README.md</code></a>, place the official MolmoBot Pick-and-Place shard under <code>runtime/</code>. Then use the top-level README workflow or run the scripts in this order:</p>
-<p>This workline is the public <code>src/pnp/</code> integration path. It is not the same entrypoint as the official RB-Y1 scripted/planner data-generation configs under <code>python -m molmo_spaces.data_generation.main ...</code>. If you need <code>RBY1PickDataGenConfig</code> or <code>RBY1PickAndPlaceDataGenConfig</code>, follow the dedicated CuRobo installation notes in the top-level <a href="../../../README.md"><code>README.md</code></a> instead of assuming the <code>src/pnp/</code> setup is sufficient.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>src/pnp/inspect_source_candidates.py<span class="w"> </span>--help
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>src/pnp/select_pick_place_seeds.py<span class="w"> </span>--help
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>python<span class="w"> </span>src/pnp/replay_source_episode.py<span class="w"> </span>--help
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>python<span class="w"> </span>src/pnp/collect_datagen_info.py<span class="w"> </span>--help
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>python<span class="w"> </span>src/pnp/convert_seed_set_to_robomimic.py<span class="w"> </span>--help
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>python<span class="w"> </span>src/pnp/parse_source_dataset.py<span class="w"> </span>--help
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>python<span class="w"> </span>src/pnp/generate_pick_place_rollout.py<span class="w"> </span>--help
+<p>The active controlled pilot uses 17 unique replay-verified source demos. The count is an input to <code>run_generation.py</code>, not a module or directory name.</p>
+<h2 id="minimal-commands">Minimal Commands<a class="headerlink" href="#minimal-commands" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>python<span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>python<span class="w"> </span>src/pnp/run_generation.py<span class="w"> </span>--help
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>python<span class="w"> </span>src/pnp/generate_pick_place_rollout.py<span class="w"> </span>--help
 </code></pre></div>
-<p>The exact data paths depend on where the official shard is placed. The scripts use environment variables such as <code>MOLMOSPACES_ROOT</code>, <code>MOLMOSPACES_PNP_WORKDIR</code>, <code>MIMICGEN_ROOT</code>, and <code>ROBOMIMIC_ROOT</code> instead of private machine paths.</p>
-<h2 id="public-evidence">Public evidence<a class="headerlink" href="#public-evidence" title="Permanent link">&para;</a></h2>
-<p>Lightweight committed evidence includes source manifests, HDF5 summaries, parser summaries, and generated rollout traces under <code>results/</code>. The full runtime inventory is indexed at <a href="../../../results/workline_index/mimicgen_pick_and_place.md"><code>results/workline_index/mimicgen_pick_and_place.md</code></a>.</p>
-<h2 id="evidence-boundary">Evidence boundary<a class="headerlink" href="#evidence-boundary" title="Permanent link">&para;</a></h2>
-<p>Valid claim: this repository contains a reproducible MolmoSpaces Pick-and-Place integration path for source replay, MimicGen-format conversion, datagen-info extraction, and generated rollout execution.</p>
-<p>Invalid claim: do not treat a summary file or HDF5 conversion alone as task success. Accepted generated demonstrations require full simulator rollout, final success, success persistence to the end, a post-hold stability window, and non-empty video/trace evidence.</p>
-<h2 id="newly-generated-franka-hdf5-input">Newly generated Franka HDF5 input<a class="headerlink" href="#newly-generated-franka-hdf5-input" title="Permanent link">&para;</a></h2>
-<p>The source selector can now consume locally generated Franka Pick-and-Place HDF5 while retaining the original MolmoBot shard input:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">PNP_SELECT_N</span><span class="o">=</span><span class="m">50</span><span class="w"> </span>python<span class="w"> </span>src/pnp/select_pnp_50_source_pool.py<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--franka-datagen-root<span class="w"> </span>/path/to/datagen/pick_and_place_planner_v1
-</code></pre></div>
-<p>Franka mode recursively reads <code>house_*/trajectories_batch_*.h5</code>, requires complete phases <code>0..9</code>, terminal/persistent task success and the replay fields used downstream, and rejects duplicate initial-state/action fingerprints. Its manifest remains compatible with the existing replay, datagen-info, robomimic conversion, and MimicGen generation path. Treat <code>samples_per_house</code> only as a requested workload and verify actual HDF5 success counts. The source provenance is synthetic scripted-IK planner expert, not human or RB-Y1 planner-server data.</p>
-<h2 id="fixed-pool-source-demo-hdf5">Fixed-pool source-demo HDF5<a class="headerlink" href="#fixed-pool-source-demo-hdf5" title="Permanent link">&para;</a></h2>
-<p>For a completed fixed pool, use the public one-command source conversion entrypoint rather than treating the raw <code>trajectories_batch_*.h5</code> files as a MimicGen input:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_PNP_WORKDIR</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/runtime/fixedpool_source&quot;</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>bash<span class="w"> </span>src/pnp/run_fixedpool_source_hdf5.sh<span class="w"> </span>/path/to/pick_and_place_planner_v1<span class="w"> </span><span class="m">43</span>
-</code></pre></div>
-<p>The entrypoint defaults to <code>PNP_FIXEDPOOL_HOUSE_ID=1716</code> and <code>PNP_FIXEDPOOL_RUN_NAME_PREFIX=potato_bowl_1716_seed</code>, preventing other houses or historical smoke runs in a shared datagen root from entering the source set. It writes an independent source manifest, replay records, a robomimic HDF5 with <code>data/demo_*</code>, and schema-validation output below <code>MOLMOSPACES_PNP_WORKDIR</code>. It never overwrites the raw datagen HDF5 or its videos. A completed conversion proves source-format availability only; generated MimicGen rollouts still require their own task-success and video gates.</p>
-<h2 id="fixed-pool-source-build-record-2026-08-01">Fixed-pool source build record (2026-08-01)<a class="headerlink" href="#fixed-pool-source-build-record-2026-08-01" title="Permanent link">&para;</a></h2>
-<p>The completed formal source set is restricted to the seven <code>potato_bowl_1716_seed*</code> run roots in house <code>1716</code>, excluding historical smoke and gate runs. It contains 43 trajectories after exact initial-state/action fingerprint deduplication. Deterministic replay and robomimic conversion produced the runtime-only artifact below; generated data is intentionally ignored by Git.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>runtime/fixedpool_potato_bowl_1716_source/artifacts/seeds/
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  robomimic_pnp_fixedpool_manual_review43.hdf5
-</code></pre></div>
-<p>Validation passed for 43 <code>data/demo_*</code> groups, 7,582 total action samples, finite numeric arrays, action/observation alignment, and source provenance spanning all seven formal run roots. Automatic replay persistence accepted 40 trajectories. Three final-success trajectories (manifest source indices <code>6</code>, <code>19</code>, and <code>29</code>) had transient persistence-flag drops; Kunyu reviewed the corresponding <code>exo_camera_1</code> videos and accepted them on 2026-08-01. The converted HDF5 explicitly records those three per-demo manual-review exceptions and the root-level exception list. This evidence establishes a usable robomimic/MimicGen source dataset, not generated MimicGen rollout success.</p>
+<p>Use an explicit source HDF5 and target manifest for every run. New experiments must not add fixed-count shell launchers or embed Python in shell scripts.</p>
+<h2 id="evidence-boundary">Evidence Boundary<a class="headerlink" href="#evidence-boundary" title="Permanent link">&para;</a></h2>
+<p>Source HDF5 validation and a simulator process exit are prerequisite checks, not task-success evidence. Accepted generated demonstrations require a real simulator rollout, final success, persistent post-hold success, non-empty videos, matching target layout, and no duplicate action or layout fingerprint.</p>
+<p><code>runtime/</code>, <code>results/</code>, and <code>artifacts/</code> retain prior evidence at their original paths. Historical scripts and snapshots live under <a href="../../../archive/pnp/"><code>archive/pnp/</code></a> and are not active entrypoints.</p>
 
 
 
@@ -1514,7 +1442,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 1, 2026 12:14:54 UTC"><span class="timeago" datetime="2026-08-01T12:14:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 1, 2026 12:14:54 UTC">2026-08-01</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 5, 2026 08:31:46 UTC"><span class="timeago" datetime="2026-08-05T08:31:46+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 5, 2026 08:31:46 UTC">2026-08-05</span>
   </span>
 
     

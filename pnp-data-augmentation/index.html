@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://allenai.github.io/molmospaces/worklines/mimicgen_50cross/">
+        <link rel="canonical" href="https://allenai.github.io/molmospaces/pnp-data-augmentation/">
       
       
       
@@ -18,19 +18,19 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>50-demo MimicGen Cross-Subtask Workline - MolmoSpaces</title>
+        <title>Configuration-Driven Pick-and-Place Data Augmentation - MolmoSpaces</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -49,11 +49,11 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-      <link rel="stylesheet" href="../../css/timeago.css">
+      <link rel="stylesheet" href="../css/timeago.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#50-demo-mimicgen-cross-subtask-workline" class="md-skip">
+        <a href="#configuration-driven-pick-and-place-data-augmentation" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +92,9 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="MolmoSpaces" class="md-header__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+    <a href=".." title="MolmoSpaces" class="md-header__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
       
-  <img src="../../images/MolmoSpacesLogo.png" alt="logo">
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              50-demo MimicGen Cross-Subtask Workline
+              Configuration-Driven Pick-and-Place Data Augmentation
             
           </span>
         </div>
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -245,7 +245,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../concepts/" class="md-tabs__link">
+        <a href="../concepts/" class="md-tabs__link">
           
   
   
@@ -267,7 +267,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../api/" class="md-tabs__link">
+        <a href="../api/" class="md-tabs__link">
           
   
   
@@ -303,9 +303,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="MolmoSpaces" class="md-nav__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+    <a href=".." title="MolmoSpaces" class="md-nav__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
       
-  <img src="../../images/MolmoSpacesLogo.png" alt="logo">
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
 
     </a>
     MolmoSpaces
@@ -332,7 +332,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -435,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/" class="md-nav__link">
+      <a href="../concepts/" class="md-nav__link">
         
   
   
@@ -463,7 +463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sensors/" class="md-nav__link">
+      <a href="../sensors/" class="md-nav__link">
         
   
   
@@ -491,7 +491,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../assets/" class="md-nav__link">
+      <a href="../assets/" class="md-nav__link">
         
   
   
@@ -519,7 +519,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../asset_libraries/" class="md-nav__link">
+      <a href="../asset_libraries/" class="md-nav__link">
         
   
   
@@ -547,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../data_format/" class="md-nav__link">
+      <a href="../data_format/" class="md-nav__link">
         
   
   
@@ -575,7 +575,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../data_processing/" class="md-nav__link">
+      <a href="../data_processing/" class="md-nav__link">
         
   
   
@@ -603,7 +603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../evaluation_guide/" class="md-nav__link">
+      <a href="../evaluation_guide/" class="md-nav__link">
         
   
   
@@ -631,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../evaluation_lifecycle/" class="md-nav__link">
+      <a href="../evaluation_lifecycle/" class="md-nav__link">
         
   
   
@@ -659,7 +659,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../code_structure/" class="md-nav__link">
+      <a href="../code_structure/" class="md-nav__link">
         
   
   
@@ -687,7 +687,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../development/" class="md-nav__link">
+      <a href="../development/" class="md-nav__link">
         
   
   
@@ -773,7 +773,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/add_robot/" class="md-nav__link">
+      <a href="../tutorials/add_robot/" class="md-nav__link">
         
   
   
@@ -801,7 +801,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/custom_assets/" class="md-nav__link">
+      <a href="../tutorials/custom_assets/" class="md-nav__link">
         
   
   
@@ -893,7 +893,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../api/" class="md-nav__link ">
+            <a href="../api/" class="md-nav__link ">
               
   
   
@@ -937,7 +937,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/molmo_spaces/" class="md-nav__link">
+      <a href="../api/molmo_spaces/" class="md-nav__link">
         
   
   
@@ -965,7 +965,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/configs/" class="md-nav__link">
+      <a href="../api/configs/" class="md-nav__link">
         
   
   
@@ -993,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/controllers/" class="md-nav__link">
+      <a href="../api/controllers/" class="md-nav__link">
         
   
   
@@ -1021,7 +1021,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/data_generation/" class="md-nav__link">
+      <a href="../api/data_generation/" class="md-nav__link">
         
   
   
@@ -1049,7 +1049,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/env/" class="md-nav__link">
+      <a href="../api/env/" class="md-nav__link">
         
   
   
@@ -1077,7 +1077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/evaluation/" class="md-nav__link">
+      <a href="../api/evaluation/" class="md-nav__link">
         
   
   
@@ -1105,7 +1105,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/kinematics/" class="md-nav__link">
+      <a href="../api/kinematics/" class="md-nav__link">
         
   
   
@@ -1133,7 +1133,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/policy/" class="md-nav__link">
+      <a href="../api/policy/" class="md-nav__link">
         
   
   
@@ -1161,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/renderer/" class="md-nav__link">
+      <a href="../api/renderer/" class="md-nav__link">
         
   
   
@@ -1189,7 +1189,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/resources/" class="md-nav__link">
+      <a href="../api/resources/" class="md-nav__link">
         
   
   
@@ -1217,7 +1217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/robots/" class="md-nav__link">
+      <a href="../api/robots/" class="md-nav__link">
         
   
   
@@ -1245,7 +1245,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/tasks/" class="md-nav__link">
+      <a href="../api/tasks/" class="md-nav__link">
         
   
   
@@ -1273,7 +1273,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/utils/" class="md-nav__link">
+      <a href="../api/utils/" class="md-nav__link">
         
   
   
@@ -1328,10 +1328,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#purpose" class="md-nav__link">
+  <a href="#what-this-repository-provides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Purpose
+        What this repository provides
       
     </span>
   </a>
@@ -1339,10 +1339,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#public-code" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Public code
+        Prerequisites
       
     </span>
   </a>
@@ -1350,10 +1350,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#minimal-run-sequence" class="md-nav__link">
+  <a href="#supported-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal run sequence
+        Supported workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-prepare-a-validated-source-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prepare a validated source dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sample-independent-target-resets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Sample independent target resets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-create-and-validate-a-generation-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Create and validate a generation configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#artifact-contract-and-acceptance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Artifact contract and acceptance
       
     </span>
   </a>
@@ -1361,10 +1411,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#public-evidence" class="md-nav__link">
+  <a href="#reproducibility-record" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Public evidence
+        Reproducibility record
       
     </span>
   </a>
@@ -1372,21 +1422,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#evidence-boundary" class="md-nav__link">
+  <a href="#common-failures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evidence boundary
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#alternative-franka-datagen-source" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Alternative Franka datagen source
+        Common failures
       
     </span>
   </a>
@@ -1410,7 +1449,7 @@
 
 
   
-    <a href="https://github.com/allenai/molmospaces/edit/main/docs/worklines/mimicgen_50cross/README.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/allenai/molmospaces/edit/main/docs/pnp-data-augmentation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -1418,47 +1457,120 @@
   
 
 
-<h1 id="50-demo-mimicgen-cross-subtask-workline">50-demo MimicGen Cross-Subtask Workline<a class="headerlink" href="#50-demo-mimicgen-cross-subtask-workline" title="Permanent link">&para;</a></h1>
-<h2 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">&para;</a></h2>
-<p>This diagnostic workline tests a route closer to MimicGen's original cross-demo subtask recombination idea: generated rollouts may select different source demonstrations per subtask by using <code>select_src_per_subtask=True</code>.</p>
-<p>It is separate from the whole-source Pick-and-Place route, where one generated rollout follows one source demonstration after object-centric transformation.</p>
-<h2 id="public-code">Public code<a class="headerlink" href="#public-code" title="Permanent link">&para;</a></h2>
-<p>The scripts live in <a href="../../../src/pnp/"><code>src/pnp/</code></a>:</p>
+<h1 id="configuration-driven-pick-and-place-data-augmentation">Configuration-Driven Pick-and-Place Data Augmentation<a class="headerlink" href="#configuration-driven-pick-and-place-data-augmentation" title="Permanent link">&para;</a></h1>
+<p>This guide is the supported entrypoint for building a reproducible
+MolmoSpaces × MimicGen Pick-and-Place dataset. It deliberately separates
+scenario definition, Python data logic, and shell environment setup.</p>
+<h2 id="what-this-repository-provides">What this repository provides<a class="headerlink" href="#what-this-repository-provides" title="Permanent link">&para;</a></h2>
 <ul>
-<li><code>select_pnp_50_source_pool.py</code></li>
-<li><code>collect_datagen_info_50cross.py</code></li>
-<li><code>convert_seed_set_to_robomimic_50cross.py</code></li>
-<li><code>run_collect_50cross_datagen.sh</code></li>
-<li><code>run_collect_50cross_datagen_parallel.sh</code></li>
-<li><code>run_collect_50cross_extra_workers.sh</code></li>
-<li><code>run_50cross_selectsrc_pilot.sh</code></li>
+<li><strong>Python CLIs</strong> in <code>src/pnp/</code> for source preparation, reset-manifest
+  sampling, rollout generation, validation, and artifact accounting.</li>
+<li><strong>JSON configurations</strong> in <code>configs/pnp/</code> that record a run's portable
+  inputs and parameters without embedding them in a script name.</li>
+<li><strong>Thin shell launchers</strong> in <code>scripts/pnp/</code>. They resolve an interpreter and
+  invoke Python; they contain no dataset logic, Python heredocs, or acceptance
+  policy.</li>
+<li><strong>Archived historical utilities</strong> in <code>archive/pnp/</code>, retained for audit but
+  excluded from the supported public API.</li>
 </ul>
-<h2 id="minimal-run-sequence">Minimal run sequence<a class="headerlink" href="#minimal-run-sequence" title="Permanent link">&para;</a></h2>
-<p>After standard setup and official-shard placement:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>src/pnp/select_pnp_50_source_pool.py<span class="w"> </span>--help
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>bash<span class="w"> </span>src/pnp/run_collect_50cross_datagen.sh
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>python<span class="w"> </span>src/pnp/convert_seed_set_to_robomimic_50cross.py<span class="w"> </span>--help
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>bash<span class="w"> </span>src/pnp/run_50cross_selectsrc_pilot.sh
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Clone recursively enough to obtain this repository's tracked source:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>&lt;repository-url&gt;
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>molmospaces-integration
+</code></pre></div></li>
+<li>Create a Python environment compatible with the repository's pinned
+   MolmoSpaces dependencies. Install the repository according to the root
+   README.</li>
+<li>Fetch the separately licensed MimicGen and robomimic source trees:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>bash<span class="w"> </span>tools/setup_mimicgen_dependency.sh
 </code></pre></div>
-<p>The shell scripts are parameterized by environment variables, especially <code>MOLMOSPACES_ROOT</code>, <code>MOLMOSPACES_PNP_WORKDIR</code>, <code>MOLMOSPACES_PYTHON</code>, <code>MIMICGEN_ROOT</code>, and <code>ROBOMIMIC_ROOT</code>.</p>
-<h2 id="public-evidence">Public evidence<a class="headerlink" href="#public-evidence" title="Permanent link">&para;</a></h2>
-<p>Committed lightweight evidence:</p>
+   <code>vendor/</code> is intentionally ignored by Git. Check the exact upstream commit
+   recorded by the setup script before changing it.</li>
+<li>Export only portable paths; do not edit a tracked script for local paths:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_PYTHON</span><span class="o">=</span>/path/to/your/python
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIMICGEN_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/mimicgen&quot;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOMIMIC_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/robomimic&quot;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">:</span><span class="nv">$MIMICGEN_ROOT</span><span class="s2">:</span><span class="nv">$ROBOMIMIC_ROOT</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="k">:-</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.cache/huggingface</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">NLTK_DATA</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NLTK_DATA</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/nltk_data</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_NLTK_DATA</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$NLTK_DATA</span><span class="s2">&quot;</span>
+</code></pre></div></li>
+</ol>
+<p>GPU rendering requires a Linux host with a correctly installed NVIDIA EGL
+stack. CPU rendering can be useful for import/configuration diagnosis, but is
+not a performance-equivalent data-collection configuration.</p>
+<h2 id="supported-workflow">Supported workflow<a class="headerlink" href="#supported-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="1-prepare-a-validated-source-dataset">1. Prepare a validated source dataset<a class="headerlink" href="#1-prepare-a-validated-source-dataset" title="Permanent link">&para;</a></h3>
+<p>Run the source pipeline with explicit input/output paths. It invokes selection,
+deterministic replay, conversion, and source-HDF5 validation as separate Python
+operations:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
+</code></pre></div>
+<p>Before reuse, verify the source HDF5 has the expected demo count, finite arrays,
+MimicGen datagen fields, action alignment, and recorded provenance.</p>
+<h3 id="2-sample-independent-target-resets">2. Sample independent target resets<a class="headerlink" href="#2-sample-independent-target-resets" title="Permanent link">&para;</a></h3>
+<p>The target sampler intentionally has no hidden scene/object/base-pose defaults.
+Supply every scenario-defining value explicitly and validate its output before
+rollouts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
+</code></pre></div>
+<p>A target manifest is an input artifact: keep it immutable after a generation
+run begins. It stores the frozen reset state and a layout SHA-256 per target.</p>
+<h3 id="3-create-and-validate-a-generation-configuration">3. Create and validate a generation configuration<a class="headerlink" href="#3-create-and-validate-a-generation-configuration" title="Permanent link">&para;</a></h3>
+<p>Copy the example rather than editing code:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cp<span class="w"> </span>configs/pnp/generation.example.json<span class="w"> </span>configs/pnp/my_run.json
+</code></pre></div>
+<p>Set <code>repository_root</code>, <code>work_dir</code>, the validated source HDF5, the validated
+target manifest, and the desired generation controls. Paths relative to the
+configuration file are supported; source/manifest paths may also be absolute.</p>
+<p>Validate before allocating a GPU or writing data:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json<span class="w"> </span>--dry-run
+</code></pre></div>
+<p>Run a one-target smoke first. Only after reviewing its artifacts should you
+raise <code>target_success</code>, target range, or maximum attempts:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json
+</code></pre></div>
+<p><code>per-subtask</code> is the supported MimicGen source-selection route. <code>whole-source</code>
+requires <code>diagnostic: true</code> and is a compatibility control, not a substitute
+for formal subtask recombination.</p>
+<h2 id="artifact-contract-and-acceptance">Artifact contract and acceptance<a class="headerlink" href="#artifact-contract-and-acceptance" title="Permanent link">&para;</a></h2>
+<p>Each run receives a new log directory containing <code>collector.log</code>, per-attempt
+logs, <code>attempts.jsonl</code>, <code>accepted.jsonl</code>, action/layout hash registries, and
+<code>summary.json</code>. Every record includes source and target-manifest SHA-256 values.</p>
+<p>An accepted rollout must independently satisfy all of the following:</p>
+<ol>
+<li>the child rollout completes without error;</li>
+<li>selection mode and requested target are verified;</li>
+<li>final task success persists through the configured post-hold window;</li>
+<li>required video artifacts are nonempty;</li>
+<li>replay and aggregated HDF5 persistence are nonempty;</li>
+<li>action and target-layout hashes are unique among accepted outputs.</li>
+</ol>
+<p>A command exit code, a video, or a nonempty HDF5 alone is not a valid dataset
+acceptance claim. Review HDF5 schema/count, simulator behavior, and provenance
+separately.</p>
+<h2 id="reproducibility-record">Reproducibility record<a class="headerlink" href="#reproducibility-record" title="Permanent link">&para;</a></h2>
+<p>For every reported dataset, retain the configuration JSON unchanged alongside
+its output directory, plus repository commit, <code>git diff</code>, interpreter/package
+versions, input SHAs, GPU/renderer information, command line, and validation
+reports. Do not publish a result as reproducible if it depends on unrecorded
+private paths, cached resources, manually patched vendor code, or a local
+uncommitted change.</p>
+<h2 id="common-failures">Common failures<a class="headerlink" href="#common-failures" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../../../results/pnp_50cross_selected_hardpass_indices.json"><code>results/pnp_50cross_selected_hardpass_indices.json</code></a></li>
-<li><a href="../../../results/pnp_seed_manifest_50demo_crossmix.json"><code>results/pnp_seed_manifest_50demo_crossmix.json</code></a></li>
-<li><a href="../../../results/robomimic_pnp_50demo_crossmix_aligned.summary.json"><code>results/robomimic_pnp_50demo_crossmix_aligned.summary.json</code></a></li>
-<li><a href="../../../results/50cross_datagen_collection_20260727/"><code>results/50cross_datagen_collection_20260727/</code></a></li>
-<li><a href="../../../results/50cross_selectsrc_pilot_20260727_182533/"><code>results/50cross_selectsrc_pilot_20260727_182533/</code></a></li>
+<li><strong>Import or CLIP/cache error:</strong> verify <code>PYTHONPATH</code> points to the intended
+  MimicGen/robomimic checkout and that offline caches are available. Different
+  vendor trees are not automatically interchangeable.</li>
+<li><strong>Renderer failure:</strong> verify NVIDIA EGL on native Linux; do not treat an
+  import-only CPU run as equivalent to GPU data collection.</li>
+<li><strong>Zero accepted rollouts:</strong> inspect target-manifest validity, per-stage task
+  traces, source compatibility, and generated HDF5 persistence before retrying
+  or changing acceptance thresholds.</li>
+<li><strong>Resume confusion:</strong> reuse the same work directory only when its input SHAs
+  and configuration are identical. Otherwise choose a new <code>work_dir</code> and label.</li>
 </ul>
-<h2 id="evidence-boundary">Evidence boundary<a class="headerlink" href="#evidence-boundary" title="Permanent link">&para;</a></h2>
-<p>Valid claim: the repository includes a 50-demo cross-subtask MimicGen diagnostic route, including source-pool selection, datagen-info collection, HDF5 summary, and bounded select-src-per-subtask pilot traces.</p>
-<p>Invalid claim: do not report the broad random 50-demo cross-subtask pilot as a successful generated dataset. The committed pilot evidence records diagnostic failures under broad random mixing and motivates compatibility-filtered source/target subsets.</p>
-<h2 id="alternative-franka-datagen-source">Alternative Franka datagen source<a class="headerlink" href="#alternative-franka-datagen-source" title="Permanent link">&para;</a></h2>
-<p>The existing command without extra options continues to read the official MolmoBot shard. To select the 50-demo manifest from newly generated Franka PnP HDF5 files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">PNP_SELECT_N</span><span class="o">=</span><span class="m">50</span><span class="w"> </span>python<span class="w"> </span>src/pnp/select_pnp_50_source_pool.py<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>--franka-datagen-root<span class="w"> </span>/path/to/datagen/pick_and_place_planner_v1
-</code></pre></div>
-<p>This scans one or more run directories recursively, applies strict success/schema/full-phase gates, removes duplicate combined initial-state/action fingerprints, and writes the same manifest consumed by the remaining commands in this workline. Confirm exactly 50 unique full Pick-and-Place trajectories and inspect replay plus wrist/exocentric videos before treating the pool as training input.</p>
 
 
 
@@ -1481,7 +1593,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 31, 2026 02:20:02 UTC"><span class="timeago" datetime="2026-07-31T02:20:02+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 31, 2026 02:20:02 UTC">2026-07-31</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 13, 2026 17:49:22 UTC"><span class="timeago" datetime="2026-08-13T17:49:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 13, 2026 17:49:22 UTC">2026-08-13</span>
   </span>
 
     
@@ -1491,7 +1603,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="July 27, 2026 13:29:54 UTC"><span class="timeago" datetime="2026-07-27T13:29:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="July 27, 2026 13:29:54 UTC">2026-07-27</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 13, 2026 17:49:22 UTC"><span class="timeago" datetime="2026-08-13T17:49:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 13, 2026 17:49:22 UTC">2026-08-13</span>
   </span>
 
     
@@ -1550,14 +1662,14 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
-        <script src="../../js/timeago.min.js"></script>
+        <script src="../js/timeago.min.js"></script>
       
-        <script src="../../js/timeago_mkdocs_material.js"></script>
+        <script src="../js/timeago_mkdocs_material.js"></script>
       
     
   </body>
