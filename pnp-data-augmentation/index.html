@@ -1489,12 +1489,12 @@ scenario definition, Python data logic, and shell environment setup.</p>
    recorded by the setup script before changing it.</li>
 <li>Export only portable paths; do not edit a tracked script for local paths:
    <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_PYTHON</span><span class="o">=</span>/path/to/your/python
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIMICGEN_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/mimicgen&quot;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOMIMIC_ROOT</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/vendor/robomimic&quot;</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">:</span><span class="nv">$MIMICGEN_ROOT</span><span class="s2">:</span><span class="nv">$ROBOMIMIC_ROOT</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="k">:-</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.cache/huggingface</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">NLTK_DATA</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">NLTK_DATA</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/nltk_data</span><span class="si">}</span><span class="s2">&quot;</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_NLTK_DATA</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$NLTK_DATA</span><span class="s2">&quot;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MIMICGEN_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/vendor/mimicgen"</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">ROBOMIMIC_ROOT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">/vendor/robomimic"</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:</span><span class="nv">$MIMICGEN_ROOT</span><span class="s2">:</span><span class="nv">$ROBOMIMIC_ROOT</span><span class="s2">:</span><span class="si">${</span><span class="nv">PYTHONPATH</span><span class="k">:-</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">export</span><span class="w"> </span><span class="nv">HF_HOME</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.cache/huggingface</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">export</span><span class="w"> </span><span class="nv">NLTK_DATA</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">NLTK_DATA</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/nltk_data</span><span class="si">}</span><span class="s2">"</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nb">export</span><span class="w"> </span><span class="nv">MOLMOSPACES_NLTK_DATA</span><span class="o">=</span><span class="s2">"</span><span class="nv">$NLTK_DATA</span><span class="s2">"</span>
 </code></pre></div></li>
 </ol>
 <p>GPU rendering requires a Linux host with a correctly installed NVIDIA EGL
@@ -1505,7 +1505,7 @@ not a performance-equivalent data-collection configuration.</p>
 <p>Run the source pipeline with explicit input/output paths. It invokes selection,
 deterministic replay, conversion, and source-HDF5 validation as separate Python
 operations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
 </code></pre></div>
 <p>Before reuse, verify the source HDF5 has the expected demo count, finite arrays,
 MimicGen datagen fields, action alignment, and recorded provenance.</p>
@@ -1513,11 +1513,18 @@ MimicGen datagen fields, action alignment, and recorded provenance.</p>
 <p>The target sampler intentionally has no hidden scene/object/base-pose defaults.
 Supply every scenario-defining value explicitly and validate its output before
 rollouts:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s2">&quot;</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">&quot;</span><span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
 </code></pre></div>
 <p>A target manifest is an input artifact: keep it immutable after a generation
 run begins. It stores the frozen reset state and a layout SHA-256 per target.</p>
+<p>For the current cross-scene control, the source pool remains from <code>house 1716</code> while
+the target manifest describes an independently reset <code>house 3080</code> layout in the
+<code>procthor-objaverse</code> validation split. This separation is part of the provenance
+record: do not describe the target as an additional source demonstration. The
+recorded <code>support_adapted_planar_pair</code> control reached final and persistent success
+for one rollout, which is useful path-validation evidence but not a dataset-level
+success-rate claim.</p>
 <h3 id="3-create-and-validate-a-generation-configuration">3. Create and validate a generation configuration<a class="headerlink" href="#3-create-and-validate-a-generation-configuration" title="Permanent link">&para;</a></h3>
 <p>Copy the example rather than editing code:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cp<span class="w"> </span>configs/pnp/generation.example.json<span class="w"> </span>configs/pnp/my_run.json
@@ -1593,7 +1600,7 @@ uncommitted change.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 13, 2026 17:49:22 UTC"><span class="timeago" datetime="2026-08-13T17:49:22+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 13, 2026 17:49:22 UTC">2026-08-13</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 18, 2026 05:57:34 UTC"><span class="timeago" datetime="2026-08-18T05:57:34+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 18, 2026 05:57:34 UTC">2026-08-18</span>
   </span>
 
     
