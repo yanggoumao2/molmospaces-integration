@@ -1,0 +1,32 @@
+{
+  "source": "/root/.cache/molmospaces/assets/L3Jvb3QvYXV0b2RsLXRtcC9tb2xtb3NwYWNlcy1pbnRlZ3JhdGlvbg/scenes/ithor/FloorPlan1_physics.xml",
+  "scene": "/root/.cache/molmospaces/assets/L3Jvb3QvYXV0b2RsLXRtcC9tb2xtb3NwYWNlcy1pbnRlZ3JhdGlvbg/scenes/ithor/FloorPlan1_confirmed_yam_temporary.xml",
+  "robot_xml": "bimanual_yam_linear_flattened.xml",
+  "robot_base": [
+    0.92,
+    -1.89,
+    0.0
+  ],
+  "robot_yaw_deg": -90,
+  "settle_steps": 1600,
+  "settled_positions": {
+    "plate_ad540817fe2632d8b49916da70118c0a_1_0_0": [
+      0.7500001378427401,
+      -2.279999803185208,
+      0.9123251905171336
+    ],
+    "Irishpotato_98dee472f1cf0a95c9fbc734935c5ea3_1_0_0": [
+      0.4199942280269677,
+      -2.279998017231715,
+      0.9318171196317006
+    ],
+    "tomato_0ee2f642cf5e3601b52ed9ad0f751736_1_0_0": [
+      1.0399999540369151,
+      -2.2800000180654725,
+      0.9417029881827614
+    ]
+  },
+  "food_contact_count": 0,
+  "food_contacts": [],
+  "exo_sha256": "e36ed0bc7ea2d5ce24c8a87b36be7f2afb2ef43197cc28d2075a19ba60adc831"
+}
