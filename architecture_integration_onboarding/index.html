@@ -1,0 +1,2004 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Large scale assets and benchmarks for vision language policies">
+      
+      
+      
+        <link rel="canonical" href="https://allenai.github.io/molmospaces/architecture_integration_onboarding/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>MolmoSpaces Integration Architecture Onboarding - MolmoSpaces</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/timeago.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#molmospaces-integration-architecture-onboarding" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="MolmoSpaces" class="md-header__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+      
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MolmoSpaces
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MolmoSpaces Integration Architecture Onboarding
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/allenai/molmospaces" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    allenai/molmospaces
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../concepts/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../api/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="MolmoSpaces" class="md-nav__button md-logo" aria-label="MolmoSpaces" data-md-component="logo">
+      
+  <img src="../images/MolmoSpacesLogo.png" alt="logo">
+
+    </a>
+    MolmoSpaces
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/allenai/molmospaces" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    allenai/molmospaces
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Key Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sensors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sensors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Built-In Assets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asset_libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset and Grasp Libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_format/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Format
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_processing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Processing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmark Evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evaluation_lifecycle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation Lifecycle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_11" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_11" id="__nav_2_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/add_robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add a custom robot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/custom_assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Add a custom asset library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/molmo_spaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    molmo_spaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/configs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    configs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/controllers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    controllers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data_generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    data_generation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/env/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    env
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    evaluation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/kinematics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kinematics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/policy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    renderer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/robots/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    robots
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-project-identity-and-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Project identity and boundaries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-architecture-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Architecture at a glance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Architecture at a glance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dependency-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency direction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-directory-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Directory guide
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-primary-entry-points-and-boot-sequence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Primary entry points and boot sequence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Primary entry points and boot sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-upstream-data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. Upstream data generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-mimicgen-pnp-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. MimicGen PnP generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-bimanual-yam-source-demos-and-diagnostics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C. Bimanual YAM source demos and diagnostics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-key-data-and-control-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Key data and control flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Key data and control flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-task-sampler-task-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Task sampler -&gt; task -&gt; environment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-pnp-source-target-rollout-accepted-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 PnP source -&gt; target rollout -&gt; accepted result
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-yam-capture-hdf5-fresh-reset-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 YAM capture -&gt; HDF5 -&gt; fresh-reset replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-local-conventions-and-development-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Local conventions and development workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Local conventions and development workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#narrow-verification-sequence-for-a-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Narrow verification sequence for a change
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-known-integration-risks-and-current-worktree-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Known integration risks and current worktree boundary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Known integration risks and current worktree boundary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#high-risk-interfaces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-risk interfaces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#audited-worktree-snapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audited worktree snapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-where-to-start-for-common-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Where to start for common changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-first-session-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. First-session checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Related documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/allenai/molmospaces/edit/main/docs/architecture_integration_onboarding.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="molmospaces-integration-architecture-onboarding">MolmoSpaces Integration Architecture Onboarding<a class="headerlink" href="#molmospaces-integration-architecture-onboarding" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Scope.</strong> This is a maintainer-oriented architecture map for this integration checkout. It records a read-only audit completed on <strong>2026-09-08 (Asia/Shanghai)</strong> against commit <code>c64d3ba</code>. It is not a claim about current runtime health, dataset validity, benchmark performance, or the state of later uncommitted changes. Re-check mutable state before executing work.</p>
+</blockquote>
+<h2 id="1-project-identity-and-boundaries">1. Project identity and boundaries<a class="headerlink" href="#1-project-identity-and-boundaries" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Primary stack:</strong> Python 3.11+ robotics/simulation project (<code>molmo-spaces</code> 0.2.0) using MuJoCo, Pydantic configuration, h5py, PyTorch and optional CuRobo/MimicGen dependencies.</li>
+<li><strong>Project type:</strong> upstream MolmoSpaces framework plus a local integration layer for MimicGen Pick-and-Place (PnP) and a distinct bimanual YAM source-demo/teleoperation workline.</li>
+<li><strong>Repository root:</strong> the integration repository checkout. The canonical long-lived 4090 checkout is elsewhere; do not assume the two trees or worktrees are identical.</li>
+<li><strong>Rule of interpretation:</strong> <code>molmo_spaces/</code> is primarily framework code. <code>src/pnp/</code> and <code>src/bimanual_yam/</code> are integration/workline code. A behavior visible in one layer is not automatically an upstream framework guarantee.</li>
+<li><strong>Large artifacts:</strong> raw HDF5, videos, run directories, caches, backup scripts, PID files and launch logs are deliberately outside normal source control. Their presence is evidence of local activity, not a reproducible result.</li>
+</ul>
+<h2 id="2-architecture-at-a-glance">2. Architecture at a glance<a class="headerlink" href="#2-architecture-at-a-glance" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                 Python module entry/config name
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                              |
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                              v
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>       molmo_spaces.data_generation.main / config_registry
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                              |
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                              v
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                     ParallelRolloutRunner
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                              |
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>             +----------------+----------------+
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>             |                                 |
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>             v                                 v
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  BaseMujocoTaskSampler                policy / controller setup
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  - choose house / episode                     |
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  - load or reuse MuJoCo scene                 |
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  - sample objects, task config                v
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>             |                         robot.update_control()
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>             v                         robot.compute_control()
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>       CPUMujocoEnv / model,data                |
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>             |                                  v
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>             v                           MuJoCo physics steps
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        BaseMujocoTask &lt;------------------------+
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>  reset -&gt; sensors/policy -&gt; initial observation
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>  step(action) -&gt; observations/rewards/done/history
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>             |
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>             v
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>       HDF5 trajectory + metadata + optional video
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>Integration worklines:
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>  Source HDF5 + target manifest                    Browser teleop / scripted expert
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>                 |                                             |
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>                 v                                             v
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>  src/pnp/generate_pick_place_rollout.py       src/bimanual_yam/*.py
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>                 |                                             |
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>                 v                                             v
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>  MG_MolmoSpacesPickAndPlace                standard task history + YAM audit group
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>                 |                                             |
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>                 +----------- MolmoSpaces task/env ------------+
+</code></pre></div>
+<h3 id="dependency-direction">Dependency direction<a class="headerlink" href="#dependency-direction" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>configs -&gt; task sampler -&gt; scene/object manager -&gt; MuJoCo env -&gt; task -&gt; sensors/history
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>configs -&gt; policy/robot -&gt; task.step -&gt; MuJoCo env
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>src/pnp -&gt; MimicGen APIs + MolmoSpaces task/env/robot interfaces
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>src/bimanual_yam -&gt; MolmoSpaces task/env/robot interfaces
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>run_generation -&gt; source HDF5 + target manifest + rollout result artifacts
+</code></pre></div>
+<p>Foundation modules are configuration, scene/object management, MuJoCo environment and task abstractions. Task samplers orchestrate scene lifecycle. <code>src/pnp/</code> and <code>src/bimanual_yam/</code> are leaves that impose workflow-specific data and acceptance contracts on the framework.</p>
+<h2 id="3-directory-guide">3. Directory guide<a class="headerlink" href="#3-directory-guide" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>molmo_spaces/                 # Upstream framework implementation
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  configs/                    # Pydantic experiment, robot, camera, task-sampler configs
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  data_generation/            # Config registry, CLI module entry, pipeline/runner
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  env/                        # BaseMujocoEnv, CPUMujocoEnv, sensors, object/data views
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  tasks/                      # Task samplers and task success/reward/history behavior
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>  policy/                     # Policy interfaces and planner implementations
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>  renderer/                   # EGL/OpenGL context and camera rendering
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  robots/                     # Robot/controller integration
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>src/
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>  pnp/                        # MimicGen Pick-and-Place adaptation, manifests and orchestration
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  bimanual_yam/               # Browser teleop, initialization/reachability, scripted source demos
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>  molmoact2_legacy/           # Historical compatibility path; not the current PnP/YAM route
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>docs/                         # Public framework and workline documentation
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>  worklines/                  # Workline boundaries and setup guides
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>mlspaces_tests/               # Component, data-generation, scene and CuRobo test families
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>tools/                        # Dependency/setup helpers, including MimicGen pinning
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>results/                      # Lightweight tracked manifests/summaries; not large artifacts
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>runtime/, runs/, cache/, ...  # Local runtime state when present; inspect provenance before use
+</code></pre></div>
+<h2 id="4-primary-entry-points-and-boot-sequence">4. Primary entry points and boot sequence<a class="headerlink" href="#4-primary-entry-points-and-boot-sequence" title="Permanent link">&para;</a></h2>
+<h3 id="a-upstream-data-generation">A. Upstream data generation<a class="headerlink" href="#a-upstream-data-generation" title="Permanent link">&para;</a></h3>
+<p><strong>Entry:</strong> <code>python -m molmo_spaces.data_generation.main &lt;RegisteredConfigName&gt;</code>.</p>
+<ol>
+<li><code>config_registry.py</code> resolves a named registered experiment configuration.</li>
+<li>The configuration combines task, robot, sensor/camera, policy, output and rollout settings.</li>
+<li><code>ParallelRolloutRunner</code> schedules house/episode work and owns parallel rollout boundaries.</li>
+<li><code>BaseMujocoTaskSampler.sample_task()</code> advances/selects a house, loads or reuses its scene, initializes task configuration and returns a task instance.</li>
+<li>The task runs policy actions through the robot controller and <code>CPUMujocoEnv</code>; trajectory history is exported to the data writer.</li>
+</ol>
+<p>Important framework files:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Responsibility</th>
+<th>Change impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>molmo_spaces/data_generation/main.py</code></td>
+<td>CLI/module entry and output-path semantics</td>
+<td>Broad: affects official generation entry</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/data_generation/pipeline.py</code></td>
+<td>Rollout orchestration and serialization boundaries</td>
+<td>Broad: affects artifact lifecycle</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/configs/task_sampler_configs.py</code></td>
+<td>Task-sampler schema and registered behavior knobs</td>
+<td>Broad: configuration compatibility</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/tasks/task_sampler.py</code></td>
+<td>House advancement, scene load/reuse, task creation</td>
+<td>Very broad: state/provenance boundary</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/env/env.py</code></td>
+<td>MuJoCo model/data lifecycle and physics stepping</td>
+<td>Very broad: simulator semantics</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/tasks/task.py</code></td>
+<td>reset/step/history/terminal semantics</td>
+<td>Very broad: all policy data</td>
+</tr>
+<tr>
+<td><code>molmo_spaces/tasks/pick_and_place_task.py</code></td>
+<td>Pick-and-place reward/success metrics</td>
+<td>Narrower task semantics</td>
+</tr>
+</tbody>
+</table>
+<h3 id="b-mimicgen-pnp-generation">B. MimicGen PnP generation<a class="headerlink" href="#b-mimicgen-pnp-generation" title="Permanent link">&para;</a></h3>
+<p><strong>Key entry:</strong> <code>src/pnp/generate_pick_place_rollout.py</code>.</p>
+<ul>
+<li><code>src/pnp/runtime.py</code> supplies process/environment helpers and result inspection support.</li>
+<li><code>src/pnp/run_generation.py</code> is the batch/provenance coordinator: validates the source pool, reads target-manifest seed coverage, checks existing attempts, deduplicates results and writes JSONL summaries.</li>
+<li><code>src/pnp/sample_fixedbase_target_manifest.py</code> creates/validates fixed-base target seed selections.</li>
+<li><code>MG_MolmoSpacesPickAndPlace</code> adapts MimicGen calls to MolmoSpaces reset, observation, robot-frame pose and low-level action interfaces.</li>
+</ul>
+<p>The PnP workflow must treat source demonstrations, target manifest, resulting HDF5, video and result JSON as one provenance unit. Do not substitute a nonempty output directory for accepted-generation evidence.</p>
+<h3 id="c-bimanual-yam-source-demos-and-diagnostics">C. Bimanual YAM source demos and diagnostics<a class="headerlink" href="#c-bimanual-yam-source-demos-and-diagnostics" title="Permanent link">&para;</a></h3>
+<p><strong>Key entries:</strong></p>
+<ul>
+<li><code>src/bimanual_yam/browser_keyboard_teleop.py</code>: human-operated browser keyboard teleoperation.</li>
+<li><code>src/bimanual_yam/validate_tabletop_initialization.py</code>: scene/object/table support initialization diagnostics.</li>
+<li><code>src/bimanual_yam/check_dual_object_reachability.py</code>: two-object reachability diagnostics.</li>
+<li><code>src/bimanual_yam/scripted_bimanual_source_demo.py</code>: scripted/oracle source candidate and replay audit path.</li>
+<li><code>docs/worklines/bimanual_yam_browser_teleop/README.md</code> and <code>docs/worklines/ithor_bimanual_yam/README.md</code>: workline-specific operating boundary.</li>
+</ul>
+<p>This is not a two-arm extension of the MimicGen PnP implementation. Browser teleop is for formally labelled source collection; scripted expert execution is a diagnostic/bootstrap path unless its provenance and acceptance conditions explicitly say otherwise.</p>
+<h2 id="5-key-data-and-control-flows">5. Key data and control flows<a class="headerlink" href="#5-key-data-and-control-flows" title="Permanent link">&para;</a></h2>
+<h3 id="51-task-sampler-task-environment">5.1 Task sampler -&gt; task -&gt; environment<a class="headerlink" href="#51-task-sampler-task-environment" title="Permanent link">&para;</a></h3>
+<p><code>BaseMujocoTaskSampler.sample_task()</code> freezes the initial task configuration when needed, advances or pins the requested house, and decides whether the MuJoCo scene must be loaded or can be reused. Scene reuse restores the scene-level preset task configuration instead of resampling arbitrary state.</p>
+<p><code>BaseMujocoTask.reset()</code> clears cumulative/trajectory state, resets stateful sensors and a registered policy, samples the initial observation, and freezes the task config with the initial observation. <code>BaseMujocoTask.step(action)</code> normalizes single/batch action input, routes it through <code>robot.update_control()</code>, repeatedly calls <code>robot.compute_control()</code> and environment physics stepping, then polls sensors and caches action/observation/reward/terminal information. <code>get_history()</code> is the canonical in-memory trajectory record.</p>
+<p><code>PickAndPlaceTask</code> adds pickup/receptacle object selection, relevant sensors and success information. Its success predicate involves placement/support semantics; proximity alone is insufficient.</p>
+<h3 id="52-pnp-source-target-rollout-accepted-result">5.2 PnP source -&gt; target rollout -&gt; accepted result<a class="headerlink" href="#52-pnp-source-target-rollout-accepted-result" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>source HDF5 data group -&gt; sorted source_keys
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>                         -&gt; target manifest seeds / valid target range
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>                         -&gt; MimicGen transformed subtask trajectories
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>                         -&gt; MG_MolmoSpacesPickAndPlace reset/action bridge
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>                         -&gt; rollout HDF5, video, result JSON
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>                         -&gt; artifact inspection + uniqueness/provenance summary
+</code></pre></div>
+<p>The adapter exposes robot-base-frame end-effector/object poses and turns target poses into one of several action families (<code>joint_position</code>, <code>tcp_delta</code>, or <code>osc_pose</code>). The customized waypoint executor maintains gripper state across MimicGen subtask boundaries, interpolates bridge waypoints and records context for later checks.</p>
+<h3 id="53-yam-capture-hdf5-fresh-reset-replay">5.3 YAM capture -&gt; HDF5 -&gt; fresh-reset replay<a class="headerlink" href="#53-yam-capture-hdf5-fresh-reset-replay" title="Permanent link">&para;</a></h3>
+<p>The scripted path writes standard trajectory data and, for <code>traj_0</code>, a <code>mimicgen_yam</code> audit group containing YAM-specific command/context metadata. The formal contract is stronger than a script exit code:</p>
+<ol>
+<li>strict capture success for both required object operations (<code>2/2</code>);</li>
+<li>complete low-level command/HDF5 record and metadata;</li>
+<li>deterministic fresh reset of the intended scene/layout;</li>
+<li>replay of the recorded commands;</li>
+<li>matching initial layout and sufficiently close final object state; and</li>
+<li>an explicit <code>replay_gate_pass=true</code> record.</li>
+</ol>
+<p>A render, an IK solution, an HDF5 file, or a successful process alone is diagnostic evidence, not a valid source demo.</p>
+<h2 id="6-local-conventions-and-development-workflow">6. Local conventions and development workflow<a class="headerlink" href="#6-local-conventions-and-development-workflow" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Python uses <code>snake_case</code> modules/functions/variables and <code>PascalCase</code> classes. Pydantic-style typed config models are the public schema boundary.</li>
+<li>Ruff is configured in <code>pyproject.toml</code> for Python 3.11 with line length 100. It enables E/F/UP/B/SIM/I/W/ANN families with documented exemptions.</li>
+<li>Tests live under <code>mlspaces_tests/</code>, grouped into component, data-generation, CuRobo and scene families. Relevant existing examples include <code>test_json_eval_task_sampler.py</code>, <code>test_franka_pick_and_place.py</code>, <code>test_kinematics.py</code>, and <code>test_rby1_pnp.py</code>.</li>
+<li>The optional <code>mujoco</code> dependency group supplies MuJoCo. PnP setup also requires <code>tools/setup_mimicgen_dependency.sh</code>, which pins the external MimicGen/robomimic checkout under <code>vendor/</code>.</li>
+<li>Treat <code>src/pnp/</code> and <code>src/bimanual_yam/</code> as public integration code; use the existing <code>docs/worklines/</code> separation rather than making PnP, YAM and legacy MolmoAct2 appear to be one runtime.</li>
+</ul>
+<h3 id="narrow-verification-sequence-for-a-change">Narrow verification sequence for a change<a class="headerlink" href="#narrow-verification-sequence-for-a-change" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Read <code>git status --short</code>, <code>git diff --stat</code>, and targeted diffs; do not overwrite existing local changes.</li>
+<li>Determine whether the change belongs in upstream framework code or an integration workline.</li>
+<li>Run syntax/static checks first, for example <code>python -m py_compile &lt;changed Python files&gt;</code> and targeted <code>ruff check</code> where the environment has Ruff installed.</li>
+<li>Run the smallest relevant existing test or a purpose-built non-generative smoke test.</li>
+<li>For rendering changes, require a real nonblank official camera artifact in the target runtime; EGL initialization alone is insufficient.</li>
+<li>For PnP/YAM behavior, use the workline acceptance contract, including reset provenance, contacts/support, replay and result files as applicable.</li>
+</ol>
+<p>The full CI/deployment pipeline was not audited in this pass. Do not claim a CI gate exists without reading the current repository configuration.</p>
+<h2 id="7-known-integration-risks-and-current-worktree-boundary">7. Known integration risks and current worktree boundary<a class="headerlink" href="#7-known-integration-risks-and-current-worktree-boundary" title="Permanent link">&para;</a></h2>
+<h3 id="high-risk-interfaces">High-risk interfaces<a class="headerlink" href="#high-risk-interfaces" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>PnP subtask timing.</strong> The customized PnP executor currently relies on MimicGen execution-call ordering around pickup/place (<code>execute_call_index == 4/5</code>). A different MimicGen decomposition can silently change the semantic boundary. Add/maintain an explicit test before changing subtask construction.</li>
+<li><strong>Frame and action semantics.</strong> Object-relative transformations require all pose inputs in the robot base frame. Keep <code>joint_position</code>, TCP-delta and OSC behavior distinct; a nominally valid IK output does not prove a safe trajectory.</li>
+<li><strong>YAM gripper semantics.</strong> Do not infer open/close from ctrl range/sign. The exact assembled robot needs a stationary geometry plus official-camera <code>open -&gt; close -&gt; open</code> calibration before any grasp claim.</li>
+<li><strong>Container rendering.</strong> The checkout includes a Mesa surfaceless EGL fallback path. This is compatibility code, not rendering validation; test a real camera output in the actual runtime.</li>
+<li><strong>Offline object descriptions.</strong> The modified <code>ObjectManager</code> fallback catches broad exceptions around CLIP availability. It improves offline fixed-object operation but may hide unrelated faults; preserve a distinguishable failure signal before treating it as production behavior.</li>
+<li><strong>Evidence inflation.</strong> A process exit, action trace, image, HDF5 or JSON is not a task-success metric. Source-demo and generation claims need their stated contacts, strict success, video/provenance and fresh-reset replay gates.</li>
+</ol>
+<h3 id="audited-worktree-snapshot">Audited worktree snapshot<a class="headerlink" href="#audited-worktree-snapshot" title="Permanent link">&para;</a></h3>
+<p>At the audit snapshot, commit <code>c64d3ba</code> had ten tracked modified files and <code>525</code> additions / <code>72</code> deletions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>molmo_spaces/configs/task_sampler_configs.py
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>molmo_spaces/env/object_manager.py
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>molmo_spaces/renderer/opengl_context.py
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>molmo_spaces/tasks/pick_and_place_task_sampler.py
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>molmo_spaces/tasks/pick_task_sampler.py
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>molmo_spaces/utils/mujoco_scene_utils.py
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>src/pnp/generate_pick_place_rollout.py
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>src/pnp/run_generation.py
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>src/pnp/runtime.py
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>src/pnp/sample_fixedbase_target_manifest.py
+</code></pre></div>
+<p>The checkout also contained untracked environments, assets/caches, inputs, runtime directories, launch scripts/logs, a partial checkout and dated backup variants of PnP scripts. Those are not source changes to reset, stage or treat as a clean reproducibility baseline. This onboarding document itself is a subsequent documentation addition and changes the worktree status.</p>
+<h2 id="8-where-to-start-for-common-changes">8. Where to start for common changes<a class="headerlink" href="#8-where-to-start-for-common-changes" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Start here</th>
+<th>Required next check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Add/alter an official task or sampler option</td>
+<td><code>molmo_spaces/configs/</code>, relevant <code>tasks/*_task_sampler.py</code></td>
+<td>Config registration, sampler reuse and task reset behavior</td>
+</tr>
+<tr>
+<td>Change MuJoCo/task behavior</td>
+<td><code>env/env.py</code>, <code>tasks/task.py</code>, concrete task file</td>
+<td>Action cache/history, sensor timing and success predicate</td>
+</tr>
+<tr>
+<td>Change PnP rollout behavior</td>
+<td><code>src/pnp/generate_pick_place_rollout.py</code></td>
+<td>MimicGen subtask semantics, frame/action mode, source/target provenance</td>
+</tr>
+<tr>
+<td>Change batch generation/acceptance</td>
+<td><code>src/pnp/run_generation.py</code>, <code>runtime.py</code></td>
+<td>Result inspection, deduplication and JSONL summary fields</td>
+</tr>
+<tr>
+<td>Change fixed target selection</td>
+<td><code>src/pnp/sample_fixedbase_target_manifest.py</code></td>
+<td>Manifest schema and seed-range compatibility</td>
+</tr>
+<tr>
+<td>Change human source collection</td>
+<td><code>browser_keyboard_teleop.py</code> plus browser workline README</td>
+<td>Teleop key semantics, HDF5 schema and formal source provenance</td>
+</tr>
+<tr>
+<td>Change YAM scripted diagnostic</td>
+<td><code>scripted_bimanual_source_demo.py</code></td>
+<td>Strict 2/2 capture and fresh-reset replay, not only script completion</td>
+</tr>
+<tr>
+<td>Diagnose scene/table layout</td>
+<td><code>validate_tabletop_initialization.py</code>, <code>check_dual_object_reachability.py</code></td>
+<td>Named support/contact, collision and reachability evidence</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-first-session-checklist">9. First-session checklist<a class="headerlink" href="#9-first-session-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] Read this guide, <code>docs/worklines/README.md</code>, and the target workline README.</li>
+<li>[ ] Inspect live <code>git status --short</code>, current commit and relevant diff before making any change.</li>
+<li>[ ] Identify whether the task belongs to upstream framework, PnP, YAM or legacy MolmoAct2.</li>
+<li>[ ] Confirm environment/resource paths and optional dependencies without exposing credentials.</li>
+<li>[ ] Trace one path end-to-end: config -&gt; sampler -&gt; task -&gt; environment -&gt; history/output.</li>
+<li>[ ] For PnP, inspect source HDF5, target manifest and result acceptance fields together.</li>
+<li>[ ] For YAM, verify the correct task-local robot base, official camera and gripper calibration before motion.</li>
+<li>[ ] Run the smallest relevant static/test/render/behavior gate, then state precisely what it proves and does not prove.</li>
+</ul>
+<h2 id="10-related-documentation">10. Related documentation<a class="headerlink" href="#10-related-documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>README.md</code>: installation and top-level framework notes.</li>
+<li><code>docs/code_structure.md</code>: broader upstream package organization.</li>
+<li><code>docs/data_format.md</code> and <code>docs/data_processing.md</code>: trajectory/data handling.</li>
+<li><code>docs/worklines/README.md</code>: active, legacy and archived workline boundaries.</li>
+<li><code>docs/worklines/mimicgen_pick_and_place/README.md</code>: PnP-specific setup/usage.</li>
+<li><code>docs/worklines/bimanual_yam_browser_teleop/README.md</code>: browser teleop workflow.</li>
+<li><code>docs/worklines/ithor_bimanual_yam/README.md</code>: iTHOR YAM evidence and execution boundary.</li>
+<li><code>mlspaces_tests/README.md</code>: test suite information.</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+    
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 18, 2026 03:02:36 UTC"><span class="timeago" datetime="2026-09-18T03:02:36+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 18, 2026 03:02:36 UTC">2026-09-18</span>
+  </span>
+
+    
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Created">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
+    </span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 18, 2026 03:02:36 UTC"><span class="timeago" datetime="2026-09-18T03:02:36+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 18, 2026 03:02:36 UTC">2026-09-18</span>
+  </span>
+
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Allen Institute for Artificial Intelligence
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "search.highlight", "search.suggest", "content.code.copy", "content.action.edit", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../js/timeago.min.js"></script>
+      
+        <script src="../js/timeago_mkdocs_material.js"></script>
+      
+    
+  </body>
+</html>
