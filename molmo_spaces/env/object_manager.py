@@ -1095,8 +1095,11 @@ class ObjectManager:
         )
         try:
             sim = clip_sim(img, compute_text_clip(descriptions))
-        except NameError:
-            log.warning("No CLIP module, using dummy description scores.")
+        except Exception as exc:
+            # Referral expressions are optional for fixed-object reset-only
+            # sampling. Do not make candidate generation depend on a remote
+            # Hugging Face CLIP download or a locally unavailable model.
+            log.warning("CLIP unavailable (%s), using dummy description scores.", exc)
             # e.g. when you don't want to install it / no gpu (?)
             names = self.get_natural_object_names(object_or_name_or_id, [])
             return [(1.0, 1.0, name) for name in names]

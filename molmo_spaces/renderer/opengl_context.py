@@ -77,6 +77,22 @@ def create_initialized_egl_device_display(device_id=0):
             else:
                 if initialized == EGL.EGL_TRUE and EGL.eglGetError() == EGL.EGL_SUCCESS:
                     return display
+    # Rental/container fallback: Mesa may expose surfaceless EGL but not
+    # EGL_EXT_platform_device. Use EGL_MESA_platform_surfaceless directly.
+    # 0x31DD is EGL_PLATFORM_SURFACELESS_MESA.
+    get_platform = getattr(EGL, "eglGetPlatformDisplay", None)
+    if get_platform is not None:
+        try:
+            surfaceless = get_platform(0x31DD, EGL.EGL_DEFAULT_DISPLAY, None)
+            if surfaceless != EGL.EGL_NO_DISPLAY:
+                try:
+                    initialized = EGL.eglInitialize(surfaceless, None, None)
+                except error.GLError:
+                    initialized = False
+                if initialized == EGL.EGL_TRUE and EGL.eglGetError() == EGL.EGL_SUCCESS:
+                    return surfaceless
+        except (error.GLError, TypeError):
+            pass
     return EGL.EGL_NO_DISPLAY
 
 
@@ -123,6 +139,7 @@ class EGLGLContext:
         global EGL_DISPLAY, EGL_DISPLAY_INITIALIZED
         del max_width, max_height  # unused
         self.device_id = device_id
+        self._context = None
         num_configs = ctypes.c_long()
         config_size = 1
         config = EGL.EGLConfig()

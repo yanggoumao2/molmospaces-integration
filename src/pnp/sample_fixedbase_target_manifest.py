@@ -6,6 +6,8 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+
+from scipy.spatial.transform import Rotation
 from pathlib import Path
 
 import numpy as np
@@ -48,6 +50,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pickup-min-dist", type=float, default=0.02)
     parser.add_argument("--pickup-max-dist", type=float, default=0.12)
     parser.add_argument("--max-attempts", type=int, default=1000)
+    parser.add_argument("--table-support-margin", type=float, default=0.01)
+    parser.add_argument(
+        "--pickup-orientation-quat",
+        type=float,
+        nargs=4,
+        default=None,
+        metavar=("QX", "QY", "QZ", "QW"),
+        help="Optional fixed pickup quaternion applied after reset before target extraction.",
+    )
     parser.add_argument(
         "--source-manifest",
         type=Path,
@@ -89,6 +100,7 @@ def main() -> None:
         FrankaPickAndPlaceDroidDataGenConfig,
     )
     from molmo_spaces.tasks.pick_and_place_task_sampler import PickAndPlaceTaskSampler
+    from src.pnp.table_support import check_table_support
     from scripts.benchmarks.create_json_benchmark import (
         extract_frozen_config,
         frozen_config_to_episode_spec,
@@ -104,17 +116,30 @@ def main() -> None:
     cfg.task_sampler_config.samples_per_house = args.max_attempts
     cfg.task_sampler_config.fixed_pickup_obj_name = args.pickup_object
     cfg.task_sampler_config.randomize_fixed_pickup_pose = True
+    cfg.task_sampler_config.preserve_fixed_pickup_orientation = True
     cfg.task_sampler_config.fixed_pickup_placement_radius_range = (
         args.pickup_min_dist,
         args.pickup_max_dist,
     )
     cfg.task_sampler_config.fixed_place_receptacle_uid = args.place_receptacle_uid
+    # Fixed receptacle is already validated by the sampler's fixed-UID branch.
+    # Keep this reset-only sampler independent of optional CLIP text weights.
+    cfg.task_sampler_config.place_receptacle_types = []
     cfg.task_sampler_config.num_place_receptacles = 1
     cfg.task_sampler_config.episodes_per_receptacle = 0
     cfg.task_sampler_config.fixed_robot_base_pose = list(args.robot_base_pose)
     cfg.task_sampler_config.randomize_lighting = False
     cfg.task_sampler_config.randomize_textures = False
     cfg.task_sampler_config.randomize_dynamics = False
+    if cfg.task_sampler_config.fixed_place_receptacle_uid != args.place_receptacle_uid:
+        raise RuntimeError(
+            f"fixed receptacle config mismatch: {cfg.task_sampler_config.fixed_place_receptacle_uid!r}"
+        )
+    print(
+        f"SAMPLER_CONFIG fixed_place_receptacle_uid={cfg.task_sampler_config.fixed_place_receptacle_uid!r} "
+        + f"place_receptacle_types={cfg.task_sampler_config.place_receptacle_types!r}",
+        flush=True,
+    )
     cfg.task_config.pickup_obj_name = args.pickup_object
     cfg.profile = False
 
@@ -132,7 +157,48 @@ def main() -> None:
                 task = sampler.sample_task(house_index=args.house_id)
                 if task is None:
                     raise RuntimeError("sampler exhausted before target count was reached")
-                task.reset()
+                reset_observation, _ = task.reset()
+                task._env.step(10)
+                if args.pickup_orientation_quat is not None:
+                    om = task._env.object_managers[task._env.current_batch_index]
+                    body_id = om.get_object_body_id(args.pickup_object)
+                    joint_id = int(task._env.current_data.model.body_jntadr[body_id])
+                    qposadr = int(task._env.current_data.model.jnt_qposadr[joint_id])
+                    if joint_id < 0 or task._env.current_data.model.jnt_type[joint_id] != 0:
+                        raise RuntimeError(
+                            f"pickup object is not free-jointed: body_id={body_id} joint_id={joint_id}"
+                        )
+                    quat_wxyz = Rotation.from_quat(
+                        np.asarray(args.pickup_orientation_quat, dtype=float)
+                    ).as_quat(scalar_first=True)
+                    task._env.current_data.qpos[qposadr + 3 : qposadr + 7] = quat_wxyz
+                    import mujoco
+
+                    mujoco.mj_forward(task._env.current_data.model, task._env.current_data)
+                    # Keep the serialized task config aligned with the qpos override.
+                    # Use the CLI quaternion directly; object-manager pose may be cached.
+                    current_pickup_xyz = task._env.current_data.qpos[qposadr : qposadr + 3].tolist()
+                    task.config.task_config.pickup_obj_start_pose = current_pickup_xyz + list(
+                        args.pickup_orientation_quat
+                    )
+                    # reset() froze the pre-override config; refresh it after qpos changes.
+                    task.frozen_config = task.config.freeze_task_config(
+                        reset_observation, task=task
+                    )
+                support = check_table_support(
+                    task._env.current_data, args.pickup_object, args.table_support_margin
+                )
+                if not support.valid:
+                    rejected += 1
+                    print(
+                        f"rejected attempt={attempt:04d}: table-support {support.reason} report={support}",
+                        flush=True,
+                    )
+                    continue
+                print(
+                    f"table-support accepted attempt={attempt:04d}: {support.reason} support_geom={support.support_geom_id}",
+                    flush=True,
+                )
                 obs_scene = task.get_obs_scene()
                 frozen = extract_frozen_config(obs_scene)
                 spec = frozen_config_to_episode_spec(

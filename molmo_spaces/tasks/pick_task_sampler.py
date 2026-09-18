@@ -597,6 +597,7 @@ class PickTaskSampler(BaseMujocoTaskSampler):
                             max_tries=task_sampler_config.max_object_placement_attempts,
                             supporting_geom_id=supporting_geom_id,
                             z_eps=0.003,
+                            preserve_rotation=task_sampler_config.preserve_fixed_pickup_orientation,
                         )
                     except ObjectPlacementError:
                         log.info(f"Failed to randomize fixed pickup object {fixed_pickup_obj_name}")
@@ -815,6 +816,12 @@ class PickTaskSampler(BaseMujocoTaskSampler):
             (expression_priority, filtered_expression_priority)
         """
         om = env.object_managers[env.current_batch_index]
+
+        # Fixed-object reset-only sampling does not need CLIP-based
+        # disambiguation. Keep it fully offline and deterministic.
+        if self.config.task_sampler_config.fixed_pickup_obj_name is not None:
+            name = om.fallback_expression(pickup_obj_name)
+            return [(1.0, 1.0, name)], [(1.0, 1.0, name)]
 
         if self._datagen_profiler is not None:
             self._datagen_profiler.start("generate_context_expressions")

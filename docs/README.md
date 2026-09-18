@@ -29,5 +29,6 @@ Some project documentation is located within the codebase. Here is an index of a
 ## Development
 
 - [Code structure](../docs/code_structure.md)
+- [Integration architecture onboarding](architecture_integration_onboarding.md)
 - [Development](../docs/development.md)
 - [Tests](../mlspaces_tests/README.md)

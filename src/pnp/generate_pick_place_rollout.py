@@ -1,10 +1,11 @@
 from __future__ import annotations
-import argparse, json, os, signal, sys, time
+import argparse, json, os, signal as _signal, sys, time
 from pathlib import Path
 import numpy as np
+from scipy.spatial.transform import Rotation, Slerp
 
-signal.signal(signal.SIGALRM, lambda *_: (_ for _ in ()).throw(TimeoutError("hard timeout")))
-signal.alarm(2400)
+_signal.signal(_signal.SIGALRM, lambda *_: (_ for _ in ()).throw(TimeoutError("hard timeout")))
+_signal.alarm(2400)
 ROOT = Path(os.environ.get("MOLMOSPACES_ROOT", "."))
 MIMICGEN_ROOT = Path(os.environ.get("MIMICGEN_ROOT", "vendor/mimicgen"))
 ROBOMIMIC_ROOT = Path(os.environ.get("ROBOMIMIC_ROOT", "vendor/robomimic"))
@@ -49,7 +50,7 @@ ap.add_argument(
 ap.add_argument(
     "--max-joint-step",
     type=float,
-    default=0.12,
+    default=0.03,
     help="maximum absolute arm-joint command change per TCP-delta step (rad)",
 )
 ap.add_argument(
@@ -59,9 +60,21 @@ ap.add_argument(
     help="maximum per-joint command delta for absolute-joint execution; 0 preserves legacy behavior",
 )
 ap.add_argument(
+    "--joint-position-continuous-step",
+    type=float,
+    default=0.0,
+    help="maximum arm-joint delta for fixed-goal joint-space interpolation; 0 preserves one command per waypoint",
+)
+ap.add_argument(
+    "--joint-position-continuous-max-substeps",
+    type=int,
+    default=32,
+    help="maximum interpolation commands for one absolute-IK waypoint",
+)
+ap.add_argument(
     "--ik-max-candidate-joint-delta",
     type=float,
-    default=0.35,
+    default=0.0,
     help="reject an absolute-IK candidate when any arm joint differs this much from measured q; 0 disables",
 )
 ap.add_argument(
@@ -75,6 +88,36 @@ ap.add_argument(
 )
 ap.add_argument("--max-tcp-linear-step", type=float, default=0.04)
 ap.add_argument("--max-tcp-angular-step", type=float, default=0.15)
+ap.add_argument(
+    "--joint-position-waypoint-pos-step",
+    type=float,
+    default=0.0,
+    help="maximum target TCP translation per joint-position waypoint; 0 preserves legacy execution",
+)
+ap.add_argument(
+    "--joint-position-waypoint-rot-step",
+    type=float,
+    default=0.0,
+    help="maximum target TCP rotation per joint-position waypoint; 0 preserves legacy execution",
+)
+ap.add_argument(
+    "--joint-position-waypoint-max-substeps",
+    type=int,
+    default=32,
+    help="maximum local interpolation steps for joint-position waypoints",
+)
+ap.add_argument(
+    "--sim-step-timeout-sec",
+    type=int,
+    default=30,
+    help="hard timeout for one simulator task.step call; zero disables",
+)
+ap.add_argument(
+    "--diagnostic-force-open-steps",
+    type=int,
+    default=0,
+    help="diagnostic-only: keep the gripper open for the first N rollout steps",
+)
 ap.add_argument(
     "--osc-position-gain",
     type=float,
@@ -191,6 +234,18 @@ ap.add_argument(
     type=int,
     default=0,
     help="after generated waypoints, hold current joint pose for this many steps to verify placement stability",
+)
+ap.add_argument(
+    "--post-hold-retreat-steps",
+    type=int,
+    default=12,
+    help="move the released gripper upward before the post-hold stability window",
+)
+ap.add_argument(
+    "--post-hold-retreat-step",
+    type=float,
+    default=0.008,
+    help="body-frame TCP retreat step used before post-hold stability verification",
 )
 ap.add_argument(
     "--interpolate-from-current-pose",
@@ -453,6 +508,12 @@ def _molmospaces_joint_execute(
 
     def execute_tick(waypoint, subtask_index, gripper_target):
         nonlocal video_count, previous_tcp_position, stalled_tcp_steps
+        env._active_waypoint_context = {
+            "execute_call_index": int(execute_call_index),
+            "subtask_index": int(subtask_index),
+            "gripper_target": float(gripper_target),
+            "waypoint_pose": np.asarray(waypoint.pose, dtype=float).tolist(),
+        }
         if render:
             env.render(mode="human", camera_name=camera_names[0])
         if write_video and video_count % video_skip == 0:
@@ -464,7 +525,44 @@ def _molmospaces_joint_execute(
         video_count += 1
         state = env.get_state()["states"]
         obs = env.get_observation()
-        action_pose = env_interface.target_pose_to_action(target_pose=waypoint.pose)
+        if not getattr(env, "_logged_first_waypoint", False):
+            from scipy.spatial.transform import Rotation as _Rotation
+
+            _cur_world = np.asarray(env.interface_current_eef_pose(), dtype=float)
+            _base = np.asarray(env.robot.robot_view.base.pose, dtype=float)
+            _cur_rel = np.linalg.inv(_base) @ _cur_world
+            _wp = np.asarray(waypoint.pose, dtype=float)
+            _delta = np.linalg.inv(_cur_rel) @ _wp
+            _pos = float(np.linalg.norm(_delta[:3, 3]))
+            _ang = float(_Rotation.from_matrix(_delta[:3, :3]).magnitude())
+            log(
+                f"FIRST_WAYPOINT_DIAG current_rel={_cur_rel.tolist()} waypoint_rel={_wp.tolist()} delta_pos={_pos:.9f} delta_ang={_ang:.9f} gripper={float(np.asarray(waypoint.gripper_action).reshape(-1)[0])}"
+            )
+            _first_action = env_interface.target_pose_to_action(target_pose=waypoint.pose)
+            if args.rollout_action_type == "joint_position":
+                _qd = np.asarray(_first_action, dtype=float) - np.asarray(
+                    env.robot.robot_view.get_qpos_dict()["arm"], dtype=float
+                )
+                log(
+                    f"FIRST_WAYPOINT_IK_DIAG q={np.asarray(_first_action).tolist()} q_delta={_qd.tolist()} max_q_delta={float(np.max(np.abs(_qd))):.9f}"
+                )
+            else:
+                log(
+                    f"FIRST_WAYPOINT_CARTESIAN_DIAG action_type={args.rollout_action_type} residual={np.asarray(_first_action).tolist()}"
+                )
+            env._logged_first_waypoint = True
+        try:
+            action_pose = env_interface.target_pose_to_action(target_pose=waypoint.pose)
+        except Exception:
+            _ctx = dict(getattr(env, "_active_waypoint_context", {}))
+            _ctx["current_eef_world"] = np.asarray(
+                env.interface_current_eef_pose(), dtype=float
+            ).tolist()
+            _ctx["current_arm"] = np.asarray(
+                env.robot.robot_view.get_qpos_dict()["arm"], dtype=float
+            ).tolist()
+            log(f"WAYPOINT_IK_FAILURE_CONTEXT {json.dumps(_ctx, sort_keys=True)}")
+            raise
         if args.rollout_action_type in ("tcp_delta", "osc_pose"):
             linear_norm = float(np.linalg.norm(action_pose[:3]))
             angular_norm = float(np.linalg.norm(action_pose[3:6]))
@@ -528,12 +626,10 @@ def _molmospaces_joint_execute(
         )
 
     setattr(env, "_custom_transition_execute_call_index", execute_call_index + 1)
-    # DataGenerator invokes execute once per subtask. The fifth invocation starts
-    # the receptacle-referenced preplace segment immediately after pickup lift.
-    # With transform_first_robot_pose, this sequence begins with an extra
-    # transformed source EEF pose followed by the actual transformed targets.
-    # A custom transition supplies that connection itself, so bridge to the first
-    # target and omit only the redundant injected EEF waypoint.
+
+    # The discontinuity is the single pickup-lift -> placement boundary.
+    # Replace that boundary once, after pickup has completed, instead of
+    # intercepting individual placement waypoints.
     use_direct_placement_transition = (
         execute_call_index == 4
         and int(args.custom_transition_steps) > 0
@@ -543,21 +639,35 @@ def _molmospaces_joint_execute(
     if use_direct_placement_transition:
         if len(self.waypoint_sequences[0]) < 1:
             raise RuntimeError("custom transition requires a preplace target pose")
-        from scipy.spatial.transform import Rotation, Slerp
-
-        # Waypoints consumed by the env interface are robot-base-relative.
-        # Convert the measured world-frame TCP before interpolating.
         start = np.linalg.inv(np.asarray(env.robot.robot_view.base.pose, dtype=float)) @ np.asarray(
             env.interface_current_eef_pose(), dtype=float
         )
-        # With transform_first_robot_pose disabled this is the first real
-        # transformed preplace target; the bridge itself supplies continuity.
         end = np.asarray(self.waypoint_sequences[0][0].pose, dtype=float)
         n = int(args.custom_transition_steps)
-        alphas = np.linspace(0.0, 1.0, n + 2)[1:-1]
-        rotations = Slerp([0.0, 1.0], Rotation.from_matrix(np.stack([start[:3, :3], end[:3, :3]])))(
-            alphas
-        ).as_matrix()
+        clearance = max(float(start[2, 3]), float(end[2, 3])) + 0.22
+        midpoint = 0.5 * (start[:3, 3] + end[:3, 3])
+        route = [
+            start[:3, 3].copy(),
+            np.array([start[0, 3], start[1, 3], clearance], dtype=float),
+            np.array([midpoint[0], midpoint[1], clearance], dtype=float),
+            np.array([end[0, 3], end[1, 3], clearance], dtype=float),
+            end[:3, 3].copy(),
+        ]
+        lengths = np.array(
+            [np.linalg.norm(route[i + 1] - route[i]) for i in range(len(route) - 1)],
+            dtype=float,
+        )
+        counts = np.maximum(1, np.floor(n * lengths / max(lengths.sum(), 1e-9)).astype(int))
+        while int(counts.sum()) < n:
+            counts[int(np.argmax(lengths / counts))] += 1
+        while int(counts.sum()) > n:
+            candidates = np.flatnonzero(counts > 1)
+            if len(candidates) == 0:
+                break
+            j = int(candidates[np.argmax(counts[candidates])])
+            counts[j] -= 1
+        route_rot = Slerp([0.0, 1.0], Rotation.from_matrix(np.stack([start[:3, :3], end[:3, :3]])))
+        total_path = max(float(lengths.sum()), 1e-9)
         transition_grip = max(
             255.0,
             float(getattr(env, "_rollout_gripper_target", 0.0)),
@@ -565,25 +675,78 @@ def _molmospaces_joint_execute(
                 np.asarray(env._custom_transition_previous_waypoint.gripper_action).reshape(-1)[0]
             ),
         )
-        for i, alpha in enumerate(alphas):
-            pose = np.eye(4, dtype=float)
-            pose[:3, :3] = rotations[i]
-            pose[:3, 3] = (1.0 - alpha) * start[:3, 3] + alpha * end[:3, 3]
-            bridge_waypoint = _MGWaypoint(
-                pose=pose, gripper_action=np.asarray([transition_grip], dtype=float), noise=0.0
-            )
-            if execute_tick(bridge_waypoint, -10, transition_grip):
-                return finished()
+        path_done = 0.0
+        for segment, segment_count in enumerate(counts):
+            segment_vec = route[segment + 1] - route[segment]
+            segment_len = float(lengths[segment])
+            for step in range(1, int(segment_count) + 1):
+                alpha = step / float(segment_count)
+                pose = np.eye(4, dtype=float)
+                pose[:3, 3] = route[segment] + alpha * segment_vec
+                path_fraction = (path_done + alpha * segment_len) / total_path
+                pose[:3, :3] = route_rot([path_fraction]).as_matrix()[0]
+                bridge_waypoint = _MGWaypoint(
+                    pose=pose, gripper_action=np.asarray([transition_grip], dtype=float), noise=0.0
+                )
+                if execute_tick(bridge_waypoint, -10, transition_grip):
+                    return finished()
+            path_done += segment_len
 
+    last_waypoint = None
     for subtask_index, seq in enumerate(self.waypoint_sequences):
-        previous_waypoint = None
-        # The bridge already ends at the first real preplace target. Do not
-        # drop that target when transform_first_robot_pose is disabled.
-        waypoints = seq if use_direct_placement_transition and subtask_index == 0 else seq
-        for waypoint in waypoints:
-            if args.rollout_action_type == "osc_pose" and previous_waypoint is not None:
-                from scipy.spatial.transform import Rotation, Slerp
-
+        previous_waypoint = last_waypoint
+        for waypoint in seq:
+            if (
+                args.rollout_action_type == "joint_position"
+                and previous_waypoint is not None
+                and (
+                    args.joint_position_waypoint_pos_step > 0
+                    or args.joint_position_waypoint_rot_step > 0
+                )
+            ):
+                a = np.asarray(previous_waypoint.pose, dtype=float)
+                b = np.asarray(waypoint.pose, dtype=float)
+                pos_delta = float(np.linalg.norm(b[:3, 3] - a[:3, 3]))
+                rot_delta = float(Rotation.from_matrix(a[:3, :3].T @ b[:3, :3]).magnitude())
+                pos_steps = (
+                    int(np.ceil(pos_delta / args.joint_position_waypoint_pos_step))
+                    if args.joint_position_waypoint_pos_step > 0
+                    else 1
+                )
+                rot_steps = (
+                    int(np.ceil(rot_delta / args.joint_position_waypoint_rot_step))
+                    if args.joint_position_waypoint_rot_step > 0
+                    else 1
+                )
+                n = min(
+                    max(1, pos_steps, rot_steps),
+                    int(args.joint_position_waypoint_max_substeps),
+                )
+                if n > 1:
+                    slerp = Slerp(
+                        [0.0, 1.0],
+                        Rotation.from_matrix(np.stack([a[:3, :3], b[:3, :3]])),
+                    )
+                    references = []
+                    for j, alpha in enumerate(np.linspace(1.0 / n, 1.0, n)):
+                        pose = np.eye(4, dtype=float)
+                        pose[:3, 3] = (1.0 - alpha) * a[:3, 3] + alpha * b[:3, 3]
+                        pose[:3, :3] = slerp([alpha]).as_matrix()[0]
+                        grip = (
+                            waypoint.gripper_action
+                            if j == n - 1
+                            else previous_waypoint.gripper_action
+                        )
+                        references.append(
+                            _MGWaypoint(
+                                pose=pose,
+                                gripper_action=grip,
+                                noise=waypoint.noise,
+                            )
+                        )
+                else:
+                    references = [waypoint]
+            elif args.rollout_action_type == "osc_pose" and previous_waypoint is not None:
                 a, b = (
                     np.asarray(previous_waypoint.pose, dtype=float),
                     np.asarray(waypoint.pose, dtype=float),
@@ -658,11 +821,49 @@ def _molmospaces_joint_execute(
                         if execute_tick(reference_waypoint, subtask_index, desired_gripper):
                             return finished()
                 else:
-                    if execute_tick(reference_waypoint, subtask_index, desired_gripper):
+                    if (
+                        args.rollout_action_type == "joint_position"
+                        and args.joint_position_continuous_step > 0
+                    ):
+                        goal_arm = np.asarray(
+                            env_interface.target_pose_to_action(
+                                target_pose=reference_waypoint.pose
+                            ),
+                            dtype=float,
+                        )
+                        current_arm = np.asarray(
+                            env.robot.robot_view.get_qpos_dict()["arm"], dtype=float
+                        )
+                        max_delta = (
+                            float(np.max(np.abs(goal_arm - current_arm))) if goal_arm.size else 0.0
+                        )
+                        n = min(
+                            max(1, int(np.ceil(max_delta / args.joint_position_continuous_step))),
+                            int(args.joint_position_continuous_max_substeps),
+                        )
+                        if n > 1:
+                            log(
+                                "JOINT_SPACE_INTERPOLATION "
+                                f"subtask={subtask_index} steps={n} max_delta={max_delta:.9f}"
+                            )
+                        for j, alpha in enumerate(np.linspace(1.0 / n, 1.0, n)):
+                            command = current_arm + alpha * (goal_arm - current_arm)
+                            original_target_pose_to_action = env_interface.target_pose_to_action
+                            env_interface.target_pose_to_action = (
+                                lambda target_pose, relative=True, q=command: q
+                            )
+                            try:
+                                gripper = desired_gripper if j == n - 1 else previous_gripper_target
+                                if execute_tick(reference_waypoint, subtask_index, gripper):
+                                    return finished()
+                            finally:
+                                env_interface.target_pose_to_action = original_target_pose_to_action
+                    elif execute_tick(reference_waypoint, subtask_index, desired_gripper):
                         return finished()
                 previous_gripper_target = desired_gripper
                 env._rollout_gripper_target = previous_gripper_target
             previous_waypoint = waypoint
+            last_waypoint = waypoint
     if len(self.waypoint_sequences) and len(self.waypoint_sequences[-1]):
         env._custom_transition_previous_waypoint = self.waypoint_sequences[-1].last_waypoint
     return dict(
@@ -717,6 +918,28 @@ class MolmoSpacesPnpEnv(EnvBase):
         self.task = self.sampler.sample_task(house_index=HOUSE_ID)
         obs, info = self.task.reset()
         self._bind()
+        if getattr(self, "_source_reset_q", None) is not None:
+            import mujoco as _mujoco
+
+            _qdict = {
+                k: np.asarray(v, dtype=float).copy()
+                for k, v in self.robot.robot_view.get_qpos_dict().items()
+            }
+            _qdict["arm"] = np.asarray(self._source_reset_q, dtype=float).copy()
+            self.robot.robot_view.set_qpos_dict(_qdict)
+            _mujoco.mj_forward(self.model, self.data)
+            log(f"DYNAMIC_SOURCE_RESET_QPOS {np.asarray(self._source_reset_q).tolist()}")
+        try:
+            from src.pnp.table_support import check_table_support
+
+            self.table_support_baseline = check_table_support(self.data, self.pickup, margin=0.01)
+            log(f"TABLE_SUPPORT_RESET {self.table_support_baseline}")
+            if not self.table_support_baseline.valid:
+                raise RuntimeError(
+                    f"table_support_reset_gate_failed: {self.table_support_baseline.reason}"
+                )
+        except ImportError:
+            self.table_support_baseline = None
         self.step_count = 0
         self.first_success = -1
         self.success_trace = []
@@ -732,16 +955,40 @@ class MolmoSpacesPnpEnv(EnvBase):
         self.ik_continuity_rejections = []
         self.last_step_terminal = False
         self.last_step_truncated = False
+        self.table_support_baseline = None
         # strict same-initial-state gate for this first smoke
-        actual_obj = np.r_[self.data.xpos[self.bid], self.data.xquat[self.bid]]
+        # EpisodeSpec stores free-joint poses as xyz + xyzw. Compare against
+        # the free-joint qpos, not body xpos/xquat (MuJoCo uses wxyz and body
+        # origins can differ from the joint frame).
+        _obj_joint_id = int(self.model.body_jntadr[self.bid])
+        _obj_qposadr = int(self.model.jnt_qposadr[_obj_joint_id])
+        _obj_q = np.asarray(self.data.qpos[_obj_qposadr : _obj_qposadr + 7], dtype=float)
+        _seed_quat = np.asarray(seed_obj[3:7], dtype=float)
+        _q_identity = np.asarray(_obj_q[3:7], dtype=float)
+        _q_xyzw = np.r_[_obj_q[4:7], _obj_q[3]]
+        if np.max(np.abs(_q_identity - _seed_quat)) <= np.max(np.abs(_q_xyzw - _seed_quat)):
+            _q_normalized = _q_identity
+            _quat_repr = "raw"
+        else:
+            _q_normalized = _q_xyzw
+            _quat_repr = "wxyz_to_xyzw_explicit"
+        actual_obj = np.r_[_obj_q[:3], _q_normalized]
         actual_base = np.asarray(pose_mat_to_7d(self.robot.robot_view.base.pose), dtype=float)
         arm = np.asarray(self.robot.robot_view.get_move_group("arm").joint_pos, dtype=float)
         grip = np.asarray(self.robot.robot_view.get_move_group("gripper").joint_pos, dtype=float)
+        _arm_ref = (
+            np.asarray(self._source_reset_q, dtype=float)
+            if getattr(self, "_source_reset_q", None) is not None
+            else seed_panda[:7]
+        )
         errs = dict(
             obj=float(np.max(np.abs(actual_obj - seed_obj))),
             base=float(np.max(np.abs(actual_base - seed_base))),
-            arm=float(np.max(np.abs(arm - seed_panda[:7]))),
+            arm=float(np.max(np.abs(arm - _arm_ref))),
             gripper=float(np.max(np.abs(grip - seed_panda[7:9]))),
+        )
+        log(
+            f"INITIAL_GATE_VALUES actual_obj={actual_obj.tolist()} seed_obj={seed_obj.tolist()} quat_repr={_quat_repr}"
         )
         log(f"INITIAL_GATE {errs}")
         if max(errs.values()) > 2e-4:
@@ -832,9 +1079,24 @@ class MolmoSpacesPnpEnv(EnvBase):
             raise RuntimeError(
                 f"rollout_action_type={args.rollout_action_type} received action shape {action.shape}"
             )
+        if args.diagnostic_force_open_steps > self.step_count:
+            grip_command = 0.0
         act = {"arm": command_arm.astype(float).tolist(), "gripper": [grip_command]}
         self.executed_joint_commands.append(np.r_[command_arm, grip_command])
-        obs, reward, terminal, truncated, infos = self.task.step(act)
+        log("TASK_STEP_BEGIN tick=%d gripper=%s" % (self.step_count, grip_command))
+        step_timeout = max(0, int(args.sim_step_timeout_sec))
+
+        previous_alarm = _signal.alarm(step_timeout) if step_timeout else 0
+        try:
+            obs, reward, terminal, truncated, infos = self.task.step(act)
+        except TimeoutError as exc:
+            raise RuntimeError(
+                f"sim_step_timeout: task.step exceeded {step_timeout}s at rollout_step={self.step_count}"
+            ) from exc
+        finally:
+            _signal.alarm(0)
+            if previous_alarm:
+                _signal.alarm(previous_alarm)
         self.last_step_terminal = bool(terminal)
         self.last_step_truncated = bool(truncated)
         actual_arm = np.asarray(arm_group.joint_pos, dtype=float)
@@ -859,6 +1121,14 @@ class MolmoSpacesPnpEnv(EnvBase):
             )
         self.actual_joint_states.append(np.r_[actual_arm, actual_grip])
         self.actual_eef_states.append(actual_eef)
+        if grip_command <= 127.0 and self.table_support_baseline is not None:
+            from src.pnp.table_support import check_table_support
+
+            support_now = check_table_support(self.data, self.pickup, margin=0.01)
+            if not support_now.valid:
+                raise RuntimeError(
+                    f"potato_table_support_violation at rollout_step={self.step_count}: {support_now.reason}"
+                )
         self.step_count += 1
         succ = bool(self.task.judge_success())
         if succ and self.first_success < 0:
@@ -971,6 +1241,98 @@ class MolmoSpacesPnpEnv(EnvBase):
             self.task.close()
 
 
+def _ik_with_seed_fallback(
+    kinematics, target_pose, move_groups, q_measured, base_pose, *, eps, damping, max_seeds=32
+):
+    """Try deterministic nearby arm seeds and return the closest valid IK solution."""
+    q0 = {k: np.asarray(v, dtype=float).copy() for k, v in q_measured.items()}
+    arm0 = np.asarray(q0["arm"], dtype=float).copy()
+    seeds = [arm0]
+    patterns = [
+        (3, 0.35),
+        (6, 0.35),
+        (1, 0.35),
+        (4, 0.35),
+        (3, -0.35),
+        (6, -0.35),
+        (1, -0.35),
+        (4, -0.35),
+        (2, 0.70),
+        (5, 0.70),
+        (0, 0.70),
+        (6, -0.70),
+        (2, -0.70),
+        (5, -0.70),
+        (0, -0.70),
+        (1, 0.70),
+        (3, 0.70),
+        (4, 0.70),
+        (6, 0.70),
+        (2, 1.05),
+        (5, 1.05),
+        (0, 1.05),
+        (1, -1.05),
+        (3, -1.05),
+        (4, -1.05),
+        (6, -1.05),
+        (2, -1.05),
+        (5, -1.05),
+        (0, -1.05),
+        (1, 1.05),
+        (3, 1.05),
+    ]
+    for joint, delta in patterns[: max(0, int(max_seeds) - 1)]:
+        seed = arm0.copy()
+        seed[joint] += delta
+        seeds.append(seed)
+    candidates = []
+    seed_status = []
+    for seed_i, seed in enumerate(seeds):
+        qseed = {k: v.copy() for k, v in q0.items()}
+        qseed["arm"] = seed
+        try:
+            jp = kinematics.ik(
+                "arm",
+                np.asarray(target_pose, dtype=float),
+                move_groups,
+                qseed,
+                base_pose,
+                rel_to_base=True,
+                eps=float(eps),
+                damping=float(damping),
+            )
+            if jp is None or "arm" not in jp:
+                seed_status.append({"seed": seed_i, "status": "none"})
+                continue
+            cand = np.asarray(jp["arm"], dtype=float)
+            if cand.shape != arm0.shape or not np.all(np.isfinite(cand)):
+                seed_status.append({"seed": seed_i, "status": "invalid", "shape": list(cand.shape)})
+                continue
+            delta = float(np.max(np.abs(cand - arm0))) if cand.size else 0.0
+            seed_status.append({"seed": seed_i, "status": "valid", "delta": delta})
+            candidates.append((delta, cand.copy()))
+        except Exception as exc:
+            seed_status.append(
+                {
+                    "seed": seed_i,
+                    "status": "exception",
+                    "type": type(exc).__name__,
+                    "message": str(exc)[:160],
+                }
+            )
+    diag = {
+        "seeds_tried": len(seeds),
+        "valid_candidates": len(candidates),
+        "seed_status": seed_status,
+    }
+    if not candidates:
+        return None, diag
+    candidates.sort(key=lambda x: x[0])
+    delta, cand = candidates[0]
+    diag["selected_max_joint_delta"] = float(delta)
+    return cand, diag
+
+
 class MG_MolmoSpacesPickAndPlace(MG_EnvInterface):
     INTERFACE_TYPE = "molmospaces"
 
@@ -980,6 +1342,30 @@ class MG_MolmoSpacesPickAndPlace(MG_EnvInterface):
             np.linalg.inv(np.asarray(self.env.robot.robot_view.base.pose, dtype=float))
             @ self.env.interface_current_eef_pose()
         )
+
+    def preview_absolute_ik_delta(self, target_pose):
+        """Preview measured-state IK without applying the continuity gate."""
+        robot_view = self.env.robot.robot_view
+        gripper_mgs = set(robot_view.get_gripper_movegroup_ids())
+        mgs_except_gripper = [x for x in robot_view.move_group_ids() if x not in gripper_mgs]
+        q_measured = {
+            k: np.asarray(v, dtype=float).copy() for k, v in robot_view.get_qpos_dict().items()
+        }
+        try:
+            candidate, _ = _ik_with_seed_fallback(
+                self.env.robot.kinematics,
+                target_pose,
+                mgs_except_gripper,
+                q_measured,
+                robot_view.base.pose,
+                eps=args.ik_position_tolerance,
+                damping=args.ik_damping,
+            )
+        finally:
+            robot_view.set_qpos_dict(q_measured)
+        if candidate is None:
+            return None
+        return float(np.max(np.abs(candidate - q_measured["arm"]))) if candidate.size else 0.0
 
     def target_pose_to_action(self, target_pose, relative=True):
         if args.rollout_action_type in ("tcp_delta", "osc_pose"):
@@ -1001,21 +1387,26 @@ class MG_MolmoSpacesPickAndPlace(MG_EnvInterface):
             k: np.asarray(v, dtype=float).copy() for k, v in robot_view.get_qpos_dict().items()
         }
         try:
-            jp = kinematics.ik(
-                "arm",
-                np.asarray(target_pose, dtype=float),
+            candidate, ik_diag = _ik_with_seed_fallback(
+                kinematics,
+                target_pose,
                 mgs_except_gripper,
                 q_measured,
                 robot_view.base.pose,
-                rel_to_base=True,
-                eps=float(args.ik_position_tolerance),
-                damping=float(args.ik_damping),
+                eps=args.ik_position_tolerance,
+                damping=args.ik_damping,
             )
         finally:
             robot_view.set_qpos_dict(q_measured)
-        if jp is None:
-            raise RuntimeError("absolute IK failed from measured joint state")
-        candidate = np.asarray(jp["arm"], dtype=float)
+        if candidate is None:
+            _cur_world = np.asarray(self.env.interface_current_eef_pose(), dtype=float)
+            _base = np.asarray(self.env.robot.robot_view.base.pose, dtype=float)
+            _cur_rel = np.linalg.inv(_base) @ _cur_world
+            raise RuntimeError(
+                "absolute IK failed from measured joint state after multi-seed search; "
+                f"current_rel={_cur_rel[:3, 3].tolist()} target_rel={np.asarray(target_pose, dtype=float)[:3, 3].tolist()} "
+                f"max_seeds={ik_diag.get('seeds_tried')}"
+            )
         max_delta = float(np.max(np.abs(candidate - q_measured["arm"]))) if candidate.size else 0.0
         self.env.ik_candidate_max_joint_deltas.append(max_delta)
         if args.ik_max_candidate_joint_delta > 0 and max_delta > args.ik_max_candidate_joint_delta:
@@ -1088,8 +1479,8 @@ for object_ref, signal in subtasks:
         object_ref=object_ref,
         subtask_term_signal=signal,
         subtask_term_offset_range=(0, 0),
-        selection_strategy="random",
-        selection_strategy_kwargs=None,
+        selection_strategy="nearest_neighbor_object",
+        selection_strategy_kwargs=dict(nn_k=3),
         action_noise=float(args.noise),
         num_interpolation_steps=int(args.interp),
         num_fixed_steps=int(args.fixed),
@@ -1099,6 +1490,7 @@ for object_ref, signal in subtasks:
 log("constructing DataGenerator")
 gen = DataGenerator(task_spec=task_spec, dataset_path=str(SRC), demo_keys=DEMO_KEYS)
 env = MolmoSpacesPnpEnv()
+env._source_reset_q = None
 iface = MG_MolmoSpacesPickAndPlace(env)
 out = WORK / "artifacts/mimicgen_pnp" / args.out_name
 out.mkdir(parents=True, exist_ok=True)
@@ -1211,6 +1603,62 @@ def append_direct_demo(
 
 
 try:
+    # Two-stage source-specific reset using MimicGen's exact object-relative first EEF.
+    env.reset()
+    _cur = iface.get_datagen_info()
+    _src_inds = np.asarray(gen.src_subtask_indices)[:, 0]
+    _obj = _cur.object_poses["pickup_obj"]
+    _selected = gen.select_source_demo(
+        eef_pose=_cur.eef_pose,
+        object_pose=_obj,
+        subtask_ind=0,
+        src_subtask_inds=_src_inds,
+        subtask_object_name="pickup_obj",
+        selection_strategy_name=task_spec[0]["selection_strategy"],
+        selection_strategy_kwargs=task_spec[0]["selection_strategy_kwargs"],
+    )
+    _seg = gen.src_dataset_infos[int(_selected)]
+    _a, _b = _src_inds[int(_selected)]
+    _src_eef = np.concatenate([_seg.eef_pose[_a : _a + 1], _seg.target_pose[_a:_b]], axis=0)
+    _src_obj = _seg.object_poses["pickup_obj"][_a]
+    from mimicgen.utils.pose_utils import transform_source_data_segment_using_object_pose as _xf
+
+    _target_first = _xf(obj_pose=_obj, src_eef_poses=_src_eef, src_obj_pose=_src_obj)[0]
+    _rv = env.robot.robot_view
+    _kin = env.robot.kinematics
+    _gripper_mgs = set(_rv.get_gripper_movegroup_ids())
+    _unlocked = [x for x in _rv.move_group_ids() if x not in _gripper_mgs]
+    _q_measured = {k: np.asarray(v, dtype=float).copy() for k, v in _rv.get_qpos_dict().items()}
+    _q_reset, _reset_ik_diag = _ik_with_seed_fallback(
+        _kin,
+        _target_first,
+        _unlocked,
+        _q_measured,
+        _rv.base.pose,
+        eps=args.ik_position_tolerance,
+        damping=args.ik_damping,
+    )
+    try:
+        _rv.set_qpos_dict(_q_measured)
+    finally:
+        if _q_reset is None:
+            log(f"DYNAMIC_SOURCE_RESET_IK_FAILED {json.dumps(_reset_ik_diag, sort_keys=True)}")
+            raise RuntimeError("dynamic source reset IK failed after multi-seed search")
+    _q_reset = np.asarray(_q_reset, dtype=float)
+    if _q_reset.shape != (7,) or not np.all(np.isfinite(_q_reset)):
+        raise RuntimeError(
+            f"dynamic source reset IK returned invalid arm qpos shape={_q_reset.shape}"
+        )
+    env._source_reset_q = _q_reset.copy()
+    log(
+        f"PRESELECT_SOURCE selected={int(_selected)} first_target={_target_first.tolist()} reset_q={_q_reset.tolist()}"
+    )
+
+    def _forced_select(*_args, **_kwargs):
+        return int(_selected)
+
+    gen.select_source_demo = _forced_select
+    log(f"DYNAMIC_SOURCE_RESET_IK {json.dumps(_reset_ik_diag, sort_keys=True)}")
     log("running DataGenerator.generate")
     results = gen.generate(
         env=env,
@@ -1243,6 +1691,27 @@ try:
             if args.rollout_action_type in ("tcp_delta", "osc_pose")
             else np.r_[arm, hold_grip]
         ).astype(np.float32)
+        # The source final residual can leave the released gripper touching the
+        # bowl. Retreat in the TCP body frame before judging placement stability;
+        # local +z points downward for this end-effector, so -z moves upward.
+        retreat_steps = max(0, int(args.post_hold_retreat_steps))
+        if args.rollout_action_type in ("tcp_delta", "osc_pose") and retreat_steps:
+            retreat_action = np.r_[
+                np.zeros(2, dtype=np.float32),
+                -abs(float(args.post_hold_retreat_step)),
+                np.zeros(3, dtype=np.float32),
+                hold_grip,
+            ]
+            for _ in range(retreat_steps):
+                results["states"].append(env.get_state()["states"])
+                results["observations"].append(env.get_observation())
+                results["datagen_infos"].append(iface.get_datagen_info(action=retreat_action))
+                env.step(retreat_action)
+                post_hold_actions.append(retreat_action.copy())
+                env.executed_waypoint_poses.append(
+                    env.interface_current_eef_pose().astype(np.float32)
+                )
+                env.executed_waypoint_subtasks.append(-2)
         for _ in range(int(args.post_hold_steps)):
             # Keep every direct-HDF5 time series action-aligned through the
             # stability window, including its pre-action state and datagen info.
@@ -1281,10 +1750,14 @@ try:
         "stop_on_success": bool(args.stop_on_success),
         "omit_final_residual": bool(args.omit_final_residual),
         "post_hold_steps": int(args.post_hold_steps),
+        "post_hold_retreat_steps": int(args.post_hold_retreat_steps),
+        "post_hold_retreat_step": float(args.post_hold_retreat_step),
         "custom_transition_steps": int(args.custom_transition_steps),
         "rollout_action_type": args.rollout_action_type,
         "max_joint_step": float(args.max_joint_step),
         "joint_position_max_step": float(args.joint_position_max_step),
+        "joint_position_continuous_step": float(args.joint_position_continuous_step),
+        "joint_position_continuous_max_substeps": int(args.joint_position_continuous_max_substeps),
         "ik_max_candidate_joint_delta": float(args.ik_max_candidate_joint_delta),
         "ik_position_tolerance": float(args.ik_position_tolerance),
         "ik_damping": float(args.ik_damping),

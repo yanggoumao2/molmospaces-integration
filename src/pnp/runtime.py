@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import signal
 import subprocess
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -79,14 +80,31 @@ def run_logged(
     env: Mapping[str, str],
     *,
     cwd: Path | None = None,
+    timeout_sec: int | None = None,
 ) -> int:
+    """Run one rollout in its own process group with an optional hard bound."""
     log.parent.mkdir(parents=True, exist_ok=True)
     with log.open("w") as stream:
-        return subprocess.run(
+        process = subprocess.Popen(
             command,
             stdout=stream,
             stderr=subprocess.STDOUT,
             env=dict(env),
             cwd=cwd,
-            check=False,
-        ).returncode
+            start_new_session=True,
+        )
+        try:
+            process.wait(timeout=timeout_sec if timeout_sec and timeout_sec > 0 else None)
+        except subprocess.TimeoutExpired:
+            stream.write(
+                f"\nRUNNER_TIMEOUT: rollout exceeded {timeout_sec}s; terminating process group\n"
+            )
+            stream.flush()
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait()
+            return 124
+        return int(process.returncode)

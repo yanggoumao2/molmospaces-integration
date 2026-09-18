@@ -81,6 +81,11 @@ class PickAndPlaceReceptacleTaskSampler(AbstractPickAndPlaceObjectTargetTaskSamp
         task_sampler_config = self.config.task_sampler_config
 
         fixed_uid = task_sampler_config.fixed_place_receptacle_uid
+        log.info(
+            "RECEPTACLE_CONFIG fixed_uid=%r types=%r",
+            fixed_uid,
+            task_sampler_config.place_receptacle_types,
+        )
         if fixed_uid is not None:
             cache_key = f"fixed:{fixed_uid}"
             annotation = ObjectMeta.annotation(fixed_uid)

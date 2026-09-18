@@ -156,6 +156,7 @@ def place_object_near(
     max_dist_to_reference: float = 1.0,
     supporting_geom_id: int | None = None,
     z_eps: float = 1e-3,
+    preserve_rotation: bool = False,
 ):
     """
     Place an object near a point such that the bottom of the object (i.e. the base) is at the specified z-value, with a random yaw.
@@ -241,7 +242,11 @@ def place_object_near(
         )
         placement_pose = np.eye(4)
         placement_pose[:3, 3] = placement_pos
-        placement_pose[:3, :3] = R.from_euler("z", yaw).as_matrix() @ original_pose[:3, :3]
+        placement_pose[:3, :3] = (
+            original_pose[:3, :3]
+            if preserve_rotation
+            else R.from_euler("z", yaw).as_matrix() @ original_pose[:3, :3]
+        )
         object_body.pose = placement_pose
 
         mujoco.mj_fwdPosition(data.model, data)

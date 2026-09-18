@@ -165,7 +165,14 @@ def main() -> int:
     parser.add_argument("--run-label", default="mimicgen_generation")
     parser.add_argument("--run-dir")
     parser.add_argument("--diagnostic", action="store_true")
+    parser.add_argument("--transform-first-robot-pose", action="store_true")
     parser.add_argument("--extra-rollout-arg", action="append", default=[])
+    parser.add_argument(
+        "--rollout-timeout-sec",
+        type=int,
+        default=900,
+        help="hard timeout for each rollout child process; zero disables",
+    )
     args = parser.parse_args()
 
     root = resolve_path(args.root)
@@ -217,8 +224,10 @@ def main() -> int:
         if len(accepted) >= args.target_success:
             break
         target = targets.start + attempt % len(targets)
-        rng_seed = args.rng_seed_base + attempt
-        source_key = keys[target % len(keys)] if args.mode == "whole-source" else None
+        rng_seed = args.rng_seed_base + target
+        source_key = (
+            None  # whole-source: pass the full pool; rollout preselects one source globally
+        )
         name = f"{args.run_label}_target{target:03d}_rng{rng_seed:05d}"
         if any(row.get("name") == name for row in read_jsonl(attempts_file)):
             continue
@@ -237,7 +246,6 @@ def main() -> int:
             source_key or ",".join(keys),
             "--mimicgen-rng-seed",
             str(rng_seed),
-            "--transform-first-robot-pose",
             "--post-hold-steps",
             "30",
             "--save-videos",
@@ -245,6 +253,8 @@ def main() -> int:
             str(generated_hdf5),
             *args.extra_rollout_arg,
         ]
+        if args.transform_first_robot_pose:
+            command.append("--transform-first-robot-pose")
         if args.mode == "per-subtask":
             command.append("--select-src-per-subtask")
         log(f"START name={name} target={target} source={source_key or 'pool'}")
@@ -253,6 +263,7 @@ def main() -> int:
             run_dir / f"{name}.log",
             workflow_env(root, work),
             cwd=root,
+            timeout_sec=args.rollout_timeout_sec,
         )
         row = inspect_attempt(
             work,
