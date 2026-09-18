@@ -11,21 +11,21 @@ scene, or a particular object pair.
 ## Architecture
 
 ```text
-one validated source HDF5 ─┐
-                             ├─ run_experiment.py + JSON configuration
-validated target manifest ───┘            │
-                                       ▼
-                              run_generation.py
-                                       ▼
-                     generate_pick_place_rollout.py
-                                       ▼
-       per-attempt artifacts + JSONL provenance + HDF5 + summary
+one validated source HDF5 + validated target manifest
+                         |
+          run_experiment.py + JSON configuration
+                         |
+                 run_generation.py
+                         |
+         generate_pick_place_rollout.py
+                         |
+ per-attempt artifacts + JSONL provenance + HDF5 + summary
 ```
 
 ## Mainline: one source to many target layouts
 
-The supported contract is one validated source demonstration plus an immutable target
-manifest. MimicGen applies the source trajectory to every target entry, so target
+This companion Franka adapter supports one validated source demonstration plus an immutable target
+manifest. The completed bimanual mainline is documented in the [YAM guide](../pnp_bimanual_yam/README.md). MimicGen applies the source trajectory to every target entry, so target
 layout variation provides expansion without collecting a new source for each layout.
 Use the direct runner with an explicit one-demo source pool:
 
@@ -36,12 +36,15 @@ Use the direct runner with an explicit one-demo source pool:
   --target-manifest /path/to/target_manifest.json \
   --mode whole-source \
   --source-count 1 \
+  --diagnostic \
   --target-success 10 \
   --max-attempts 30 \
   --run-label one_source_mimicgen
 ```
 
-`per-subtask` remains a separate multi-source comparison route. The FloorPlan1
+`--source-count 1` checks the HDF5 demo count; it does not truncate a larger pool.
+The whole-source Franka control retains its diagnostic classification. `per-subtask`
+can select from either one source or a larger pool. The FloorPlan1
 bimanual YAM implementation follows the same contract in
 `src/pnp_bimanual_yam/run_datagen.py`: one enriched source is converted to one
 source per arm, then the right and left arms execute sequentially in one physical

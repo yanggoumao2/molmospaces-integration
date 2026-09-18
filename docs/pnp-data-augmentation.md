@@ -51,9 +51,9 @@ not a performance-equivalent data-collection configuration.
 
 ### Mainline contract: one source, many targets
 
-The supported mainline starts with one validated source demonstration. MimicGen receives that complete one-demo source and transforms it for each immutable target-layout entry; the target manifest, not a second source collection, provides diversity. The same contract is used by the generic Franka runner and by the sequential bimanual YAM runner.
+The repository's mainline is one validated source expanded across multiple target layouts. The completed **FloorPlan1 bimanual YAM pilot achieved 6/16 strict successes**. Its [pipeline guide](../src/pnp_bimanual_yam/README.md) documents the sequential single-reset runner, scene/source inputs, and NPZ outputs.
 
-For the generic runner:
+The following sections cover the companion Franka PnP adapter, which uses a validated source HDF5 plus a separate immutable target manifest. A single-source whole-trajectory control can be launched directly after the prerequisites above:
 
 ```bash
 "$MOLMOSPACES_PYTHON" src/pnp/run_generation.py \
@@ -62,26 +62,13 @@ For the generic runner:
   --target-manifest /path/to/target_manifest.json \
   --mode whole-source \
   --source-count 1 \
+  --diagnostic \
   --target-success 10 \
   --max-attempts 30 \
   --run-label one_source_mimicgen
 ```
 
-`whole-source` is intentional here: with `--source-count 1`, MimicGen sees exactly one validated source demo for every target. Use `per-subtask` only when a multi-source comparison is the actual experiment.
-
-For FloorPlan1 bimanual YAM, one enriched source is converted to one right-arm and one left-arm MimicGen source, then both arms run sequentially inside one physical reset:
-
-```bash
-PYTHONPATH=.:vendor/mimicgen:vendor/robomimic "$MOLMOSPACES_PYTHON" src/pnp_bimanual_yam/run_datagen.py \
-  --src /path/to/source_demo_enriched.h5 \
-  --num-attempts 16 \
-  --sampling-design lhs \
-  --xy-jitter 0.10 \
-  --manifest runtime/one_source_yam/manifest.json \
-  --success-dir runtime/one_source_yam/successes
-```
-
-This expands one source across target layouts; it does not create a new source demonstration per target.
+`--source-count 1` verifies that the HDF5 contains exactly one demo; it does not select one demo from a larger pool. `whole-source` keeps that demo across all subtasks. This Franka control retains the existing diagnostic classification. `per-subtask` selection can also use a one-demo pool; with multiple demos it enables reselection at each subtask.
 
 ### 1. Prepare a validated source dataset
 
@@ -144,11 +131,11 @@ raise `target_success`, target range, or maximum attempts:
 scripts/pnp/run_generation.sh configs/pnp/my_run.json
 ```
 
-`whole-source` with `--source-count 1` is the documented one-source mainline. The
-configuration wrapper still requires `generation.diagnostic=true` whenever it is used
-for a whole-source compatibility run; the direct CLI above makes the validated
-one-source contract explicit. `per-subtask` remains available for multi-source
-recombination studies.
+For a one-demo configuration, set `inputs.source_count=1`. The configuration
+wrapper requires `generation.diagnostic=true` for `generation.mode="whole-source"`.
+Use `per-subtask` to exercise the subtask-selection route with one or more demos.
+These Franka controls have their own acceptance policy; the successful YAM pipeline
+uses the dedicated runner linked above.
 
 ## Artifact contract and acceptance
 

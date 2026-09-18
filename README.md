@@ -10,12 +10,31 @@
 
 <p align="center">
   <strong>Controlled pick-and-place trajectory augmentation in simulation.</strong><br />
-  From validated Franka source demonstrations to transformed target layouts, with explicit replay, persistence, and uniqueness gates.
+  One validated source demonstration, expanded by MimicGen into multiple target-layout rollouts.
 </p>
 
 <p align="center">
-  <code>Franka + DROID cameras</code> &nbsp; <code>whole-source / per-subtask transfer</code> &nbsp; <code>strict artifact validation</code>
+  <code>One source → many targets</code> &nbsp; <code>Bimanual YAM + Franka</code> &nbsp; <code>strict artifact validation</code>
 </p>
+
+## Mainline: one source demonstration to MimicGen expansion
+
+**The pipeline has run end to end in simulation:** one validated FloorPlan1 bimanual YAM source demonstration is reused across sampled target layouts through MimicGen. The completed 16-layout pilot produced **6 strict successes (37.5%)** with LHS sampling, XY offsets of up to ±0.10 m, and 40 interpolation steps.
+
+```text
+One validated bimanual source demonstration
+  -> Convert to right/left MimicGen inputs (one demo_0 per arm)
+  -> Sample target layouts for potato, tomato, and plate
+  -> MimicGen object-centric transfer + source-seeded IK + carry blending
+  -> Right arm then left arm within one physical reset
+  -> Strict two-object success gate + checkpoint manifest + successful trajectories
+```
+
+The two per-arm HDF5 files come from the same source episode. Each target layout reuses that source: the right arm places the potato, then the left arm places the tomato. Both objects must be released, supported by the plate, and remain supported during the final settle window.
+
+The [YAM pipeline guide](src/pnp_bimanual_yam/README.md) gives the source/scene requirements, commands, output format, and [pilot evidence](results/workline_index/bimanual_yam_one_source_pilot.json). This result establishes the single-source expansion pipeline; HDF5 replay/export, dataset deduplication, continuity audits, and larger-scale validation remain separate gates.
+
+The Franka adapter in [`src/pnp/`](src/pnp/) is a companion route. Its earlier 17-demo pilot and the archived 50-demo cross-subtask experiments are historical comparisons. The Franka media below illustrate that route and are separate from the YAM pilot reported above.
 
 <p align="center">
   <img src="media/gif/heterogeneous_generated_examples.gif" alt="Generated Franka pick-and-place rollouts" width="720" />
@@ -24,14 +43,6 @@
 <p align="center">
   <a href="media/heterogeneous_generated_examples.mp4">Open full-size generated rollouts</a>
 </p>
-
-## The primary workline
-
-```text
-One validated source demonstration  ->  MimicGen expansion across target layouts  ->  Replay, video, HDF5, and uniqueness checks
-```
-
-The repository focuses on a reproducible Franka Pick-and-Place route. It separates source collection, target-layout sampling, and generated rollout acceptance so that a runnable process, a saved artifact, and a strict task outcome are never treated as interchangeable evidence.
 
 <table>
   <tr>
@@ -53,7 +64,8 @@ This repository is a MolmoSpaces integration workline portfolio. The top-level R
 
 | Workline | Canonical README | Code entrypoint | Evidence / inventory | Status |
 |---|---|---|---|---|
-| MimicGen Pick-and-Place | [`docs/worklines/mimicgen_pick_and_place/README.md`](docs/worklines/mimicgen_pick_and_place/README.md) | [`src/pnp/`](src/pnp/) | [`results/workline_index/mimicgen_pick_and_place.md`](results/workline_index/mimicgen_pick_and_place.md) | Active / primary |
+| FloorPlan1 YAM: one source → many targets | [`src/pnp_bimanual_yam/README.md`](src/pnp_bimanual_yam/README.md) | [`src/pnp_bimanual_yam/run_datagen.py`](src/pnp_bimanual_yam/run_datagen.py) | [16-layout pilot](results/workline_index/bimanual_yam_one_source_pilot.json) | Active / primary; 6/16 strict successes |
+| MimicGen Pick-and-Place | [`docs/worklines/mimicgen_pick_and_place/README.md`](docs/worklines/mimicgen_pick_and_place/README.md) | [`src/pnp/`](src/pnp/) | [`results/workline_index/mimicgen_pick_and_place.md`](results/workline_index/mimicgen_pick_and_place.md) | Franka companion route |
 | 50-demo MimicGen cross-subtask route | [`archive/docs/worklines/mimicgen_50cross/README.md`](archive/docs/worklines/mimicgen_50cross/README.md) | [`archive/pnp/legacy_50cross/`](archive/pnp/legacy_50cross/) | [`results/50cross_selectsrc_pilot_20260727_182533/`](results/50cross_selectsrc_pilot_20260727_182533/) | Archived diagnostic |
 | Bimanual YAM browser teleoperation | [`docs/worklines/bimanual_yam_browser_teleop/README.md`](docs/worklines/bimanual_yam_browser_teleop/README.md) | [`src/bimanual_yam/`](src/bimanual_yam/) | [`results/workline_index/ithor_bimanual_yam.md`](results/workline_index/ithor_bimanual_yam.md) | Infrastructure |
 | iTHOR bimanual YAM | [`docs/worklines/ithor_bimanual_yam/README.md`](docs/worklines/ithor_bimanual_yam/README.md) | [`src/bimanual_yam/`](src/bimanual_yam/) | [`results/workline_index/ithor_bimanual_yam.md`](results/workline_index/ithor_bimanual_yam.md) | In progress |
@@ -68,64 +80,26 @@ Large runtime data are excluded from Git: official shards, generated HDF5 files,
 
 ## Primary Reproduction Path
 
-The primary workflow in this repository is:
-
-> One validated Franka source demonstration -> MimicGen expansion across independent target layouts -> accepted rollouts
-
-### Mainline: one validated source demonstration to MimicGen expansion
-
-The mainline contract is deliberately small: validate one source demonstration, freeze an independent target-layout manifest, and let MimicGen transform that same source into multiple target layouts. A multi-demo source pool is optional for comparison experiments; it is not a prerequisite for the repository's primary route.
-
-For the generic Franka Pick-and-Place runner, `--mode whole-source` with `--source-count 1` makes the contract explicit: the complete one-demo source is passed to MimicGen for every target entry. The target manifest stays immutable for the run, and each generated rollout is accepted only after replay, persistence, artifact, and uniqueness checks.
+From the repository root, activate the project Python 3.11 environment and prepare the MimicGen/robomimic dependencies, FloorPlan1 scene bundle, and corrected source:
 
 ```bash
-$MOLMOSPACES_PYTHON src/pnp/run_generation.py \
-  --work runtime/one_source_expansion \
-  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
-  --target-manifest /path/to/target_manifest.json \
-  --mode whole-source \
-  --source-count 1 \
-  --target-success 10 \
-  --max-attempts 30 \
-  --run-label one_source_mimicgen
-```
-
-For the FloorPlan1 bimanual YAM route, the same single-source contract is implemented by the sequential runner: one enriched source demo is converted into right/left MimicGen inputs, both arms run in one physical reset, and each target layout receives a checkpointed result.
-
-```bash
-PYTHONPATH=.:vendor/mimicgen:vendor/robomimic $MOLMOSPACES_PYTHON src/pnp_bimanual_yam/run_datagen.py \
-  --src /path/to/source_demo_enriched.h5 \
+PYTHONPATH="$PWD:$PWD/vendor/mimicgen:$PWD/vendor/robomimic:${PYTHONPATH:-}" \
+python src/pnp_bimanual_yam/run_datagen.py \
+  --src /path/to/validated/source_demo_enriched.h5 \
+  --workdir runtime/one_source_yam \
   --num-attempts 16 \
+  --seed 20260915 \
   --sampling-design lhs \
   --xy-jitter 0.10 \
+  --num-interpolation-steps 40 \
   --manifest runtime/one_source_yam/manifest.json \
   --success-dir runtime/one_source_yam/successes
 ```
 
-The bimanual command expands one source across sampled target layouts; it does not collect a new source demo per layout.
+Follow the [YAM pipeline guide](src/pnp_bimanual_yam/README.md) for these inputs. Use a fresh `--workdir` to avoid reusing stale per-arm source caches. The example explicitly selects the validated 40-step interpolation setting. The source and scene bundle are runtime inputs outside Git.
 
-The command-line value `--robot droid` selects a **Franka robot with DROID-style cameras**. It does not select an RB-Y1 robot. The RB-Y1 CuRobo/planner-server pipeline is a separate optional upstream workline and is not required for the Franka workflow below. See [`docs/worklines/molmospaces_official_reproduction/README.md`](docs/worklines/molmospaces_official_reproduction/README.md) only if that separate workline is your goal.
+The Franka Quick Start below covers source collection and the companion PnP adapter. Its configuration interface is documented in [`docs/pnp-data-augmentation.md`](docs/pnp-data-augmentation.md).
 
-### Configuration-Driven MimicGen Augmentation
-
-For the reusable source-HDF5, target-manifest, and rollout-generation workflow, use the dedicated engineering guide: [`docs/pnp-data-augmentation.md`](docs/pnp-data-augmentation.md). The supported public boundary is:
-
-```text
-configs/pnp/*.json -> scripts/pnp/run_generation.sh -> src/pnp/run_experiment.py -> src/pnp/run_generation.py
-```
-
-The configuration records scenario-independent run controls and explicit input artifacts. Shell launchers contain no Python heredocs or experiment-specific paths; historical fixed-layout utilities remain under `archive/pnp/` for provenance only. Start with `configs/pnp/generation.example.json`, run its `--dry-run` validation, then replace its placeholder source HDF5 and target manifest with validated artifacts.
-
-### Current cross-scene target control
-
-The current controlled cross-scene example reuses the replay-verified source pool from
-`house 1716` and evaluates it on an independently reset target in `house 3080`
-(`procthor-objaverse`, `val` split). The target uses the
-`support_adapted_planar_pair` layout, with the Irish potato pickup object and an
-explicit place-receptacle UID recorded in the target manifest. One normal simulator
-rollout reached final success and remained successful through the post-hold window;
-this is a diagnostic control proving the target-layout path, not a formal success-rate
-claim, full 6-D rigid migration result, or training-ready dataset.
 
 ## Franka Datagen Quick Start
 
@@ -403,7 +377,7 @@ $MOLMOSPACES_PYTHON src/pnp/sample_fixedbase_target_manifest.py --help
 $MOLMOSPACES_PYTHON src/pnp/run_generation.py --help
 ```
 
-Build or select one validated source HDF5, create and validate an independent target manifest, then run the one-source command above. `generate_pick_place_rollout.py` is the single-rollout execution primitive. Multi-source `per-subtask` selection remains available for comparison studies. Full usage and evidence gates are in [`src/pnp/README.md`](src/pnp/README.md).
+Build or select one validated source HDF5, create and validate an independent target manifest, then use the [Franka one-source command](src/pnp/README.md#mainline-one-source-to-many-target-layouts). `generate_pick_place_rollout.py` is the single-rollout execution primitive. Multi-source `per-subtask` selection remains available for comparison studies. Full usage and evidence gates are in [`src/pnp/README.md`](src/pnp/README.md).
 
 Historical 50-demo cross-subtask scripts and collectors are archived under [`archive/pnp/`](archive/pnp/); the corresponding result directories remain unchanged under `results/`.
 
@@ -492,7 +466,8 @@ Click the page first; `Tab` switches active arm; `W/S/A/D` moves in the visual p
 molmo_spaces/             Upstream MolmoSpaces Python package
 scripts/                  Upstream MolmoSpaces scripts
 configs/, examples/, docs/ Upstream configuration, examples, and documentation
-src/pnp/                  Pick-and-Place MimicGen integration scripts
+src/pnp_bimanual_yam/      Mainline: one-source bimanual YAM MimicGen expansion
+src/pnp/                  Franka Pick-and-Place MimicGen integration scripts
 src/bimanual_yam/         Bimanual YAM diagnostics and browser keyboard teleoperation
 results/                  Lightweight JSON manifests and result summaries
 media/                    Small public demo videos for the GitHub README

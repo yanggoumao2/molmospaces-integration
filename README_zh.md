@@ -10,12 +10,31 @@
 
 <p align="center">
   <strong>面向仿真的受控 Pick-and-Place 轨迹扩充。</strong><br />
-  从通过验证的 Franka 源示范到变换后的 target 布局，并保留明确的 replay、持久化与唯一性验收门。
+  一条通过验证的 source demonstration，经 MimicGen 扩充为多个 target 布局下的 rollout。
 </p>
 
 <p align="center">
-  <code>Franka + DROID cameras</code> &nbsp; <code>whole-source / per-subtask transfer</code> &nbsp; <code>严格 artifact 验收</code>
+  <code>One source → many targets</code> &nbsp; <code>Bimanual YAM + Franka</code> &nbsp; <code>严格 artifact 验收</code>
 </p>
+
+## 主线：一条 source demonstration 经过 MimicGen 扩充
+
+**这条 pipeline 已在仿真中端到端打通：**复用一条通过验证的 FloorPlan1 双臂 YAM source demonstration，通过 MimicGen 扩充到多个采样 target 布局。已完成的 16-layout pilot 得到 **6 条严格成功轨迹（37.5%）**，使用 LHS 采样、最大 ±0.10 m 的 XY 偏移和 40 步插值。
+
+```text
+一条通过验证的双臂 source demonstration
+  -> 转换为右/左臂 MimicGen 输入（每臂一条 demo_0）
+  -> 采样 potato、tomato、plate 的 target 布局
+  -> MimicGen object-centric 变换 + source-seeded IK + carry 融合
+  -> 同一次物理 reset 中，右臂执行后再执行左臂
+  -> 双物体严格成功 gate + checkpoint manifest + 成功轨迹
+```
+
+两份 per-arm HDF5 来自同一个 source episode。每个 target 布局都复用这条 source：右臂将土豆放入盘中，随后左臂放置番茄。两种食物都必须已释放、受盘子支撑，并在最终 settle 窗口中持续受支撑。
+
+[YAM pipeline 指南](src/pnp_bimanual_yam/README.md)说明 source/场景要求、运行命令、产物格式及 [pilot 证据](results/workline_index/bimanual_yam_one_source_pilot.json)。这一结果证明单 source 扩充流程已打通；HDF5 replay/export、数据去重、连续性审计与更大规模验证仍需分别完成。
+
+[`src/pnp/`](src/pnp/) 中的 Franka adapter 是配套路线。早期 17-demo pilot 和已归档的 50-demo cross-subtask 实验作为历史对照保留。下方 Franka 媒体展示的是对应路线，与上述 YAM pilot 分别记录。
 
 <p align="center">
   <img src="media/gif/heterogeneous_generated_examples.gif" alt="Generated Franka pick-and-place rollouts" width="720" />
@@ -24,14 +43,6 @@
 <p align="center">
   <a href="media/heterogeneous_generated_examples.mp4">查看完整尺寸的生成 rollout</a>
 </p>
-
-## 主工作线
-
-```text
-一条通过验证的 source demonstration  ->  跨 target 布局的 MimicGen 扩充  ->  replay、视频、HDF5 与唯一性检查
-```
-
-仓库聚焦可复现的 Franka Pick-and-Place 路线。它将源示范采集、target 布局采样和生成 rollout 的验收分开记录，避免将可运行进程、已保存 artifact 与严格任务成功混为同一层证据。
 
 <table>
   <tr>
@@ -53,7 +64,8 @@
 
 | 工作线 | 详细 README | 代码入口 | 证据 / inventory | 状态 |
 |---|---|---|---|---|
-| MimicGen Pick-and-Place | [`docs/worklines/mimicgen_pick_and_place/README.md`](docs/worklines/mimicgen_pick_and_place/README.md) | [`src/pnp/`](src/pnp/) | [`results/workline_index/mimicgen_pick_and_place.md`](results/workline_index/mimicgen_pick_and_place.md) | Active / primary |
+| FloorPlan1 YAM: one source → many targets | [`src/pnp_bimanual_yam/README.md`](src/pnp_bimanual_yam/README.md) | [`src/pnp_bimanual_yam/run_datagen.py`](src/pnp_bimanual_yam/run_datagen.py) | [16-layout pilot](results/workline_index/bimanual_yam_one_source_pilot.json) | Active / primary; 6/16 strict successes |
+| MimicGen Pick-and-Place | [`docs/worklines/mimicgen_pick_and_place/README.md`](docs/worklines/mimicgen_pick_and_place/README.md) | [`src/pnp/`](src/pnp/) | [`results/workline_index/mimicgen_pick_and_place.md`](results/workline_index/mimicgen_pick_and_place.md) | Franka companion route |
 | 50-demo MimicGen cross-subtask route | [`archive/docs/worklines/mimicgen_50cross/README.md`](archive/docs/worklines/mimicgen_50cross/README.md) | [`archive/pnp/legacy_50cross/`](archive/pnp/legacy_50cross/) | [`results/50cross_selectsrc_pilot_20260727_182533/`](results/50cross_selectsrc_pilot_20260727_182533/) | Archived diagnostic |
 | Bimanual YAM browser teleop | [`docs/worklines/bimanual_yam_browser_teleop/README.md`](docs/worklines/bimanual_yam_browser_teleop/README.md) | [`src/bimanual_yam/`](src/bimanual_yam/) | [`results/workline_index/ithor_bimanual_yam.md`](results/workline_index/ithor_bimanual_yam.md) | Infrastructure |
 | iTHOR bimanual YAM | [`docs/worklines/ithor_bimanual_yam/README.md`](docs/worklines/ithor_bimanual_yam/README.md) | [`src/bimanual_yam/`](src/bimanual_yam/) | [`results/workline_index/ithor_bimanual_yam.md`](results/workline_index/ithor_bimanual_yam.md) | In progress |
@@ -68,43 +80,26 @@
 
 ## 主复现路线
 
-本仓库的主流程是：
-
-> 一条通过验证的 Franka source demonstration -> MimicGen 扩充到多个独立 target 布局 -> 验收生成 rollout
-
-### 主线：一条 source demonstration 经过 MimicGen 扩充
-
-主线流程刻意保持最小闭环：先验证一条 source demonstration，再冻结独立的 target-layout manifest，最后让 MimicGen 将同一条 source 变换到多个 target 布局。多条 source 只用于对比实验，不是主线的前置条件。
-
-对通用 Franka Pick-and-Place runner，使用 `--mode whole-source` 加 `--source-count 1` 明确表达这一契约：每个 target entry 都接收完整的单条 source。一次生成运行期间 target manifest 保持不可变；每条 rollout 仍需通过 replay、持久化、artifact 和唯一性检查。
+在仓库根目录激活项目 Python 3.11 环境，准备 MimicGen/robomimic 依赖、FloorPlan1 场景 bundle 与修正版 source 后执行：
 
 ```bash
-$MOLMOSPACES_PYTHON src/pnp/run_generation.py \
-  --work runtime/one_source_expansion \
-  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
-  --target-manifest /path/to/target_manifest.json \
-  --mode whole-source \
-  --source-count 1 \
-  --target-success 10 \
-  --max-attempts 30 \
-  --run-label one_source_mimicgen
-```
-
-FloorPlan1 双臂 YAM 路线也遵循同一条 single-source 契约：一条 enriched source demo 被转换成右/左臂 MimicGen 输入，两只手臂在同一次物理 reset 中顺序执行，每个 target 布局写入 checkpoint 结果。
-
-```bash
-PYTHONPATH=.:vendor/mimicgen:vendor/robomimic $MOLMOSPACES_PYTHON src/pnp_bimanual_yam/run_datagen.py \
-  --src /path/to/source_demo_enriched.h5 \
+PYTHONPATH="$PWD:$PWD/vendor/mimicgen:$PWD/vendor/robomimic:${PYTHONPATH:-}" \
+python src/pnp_bimanual_yam/run_datagen.py \
+  --src /path/to/validated/source_demo_enriched.h5 \
+  --workdir runtime/one_source_yam \
   --num-attempts 16 \
+  --seed 20260915 \
   --sampling-design lhs \
   --xy-jitter 0.10 \
+  --num-interpolation-steps 40 \
   --manifest runtime/one_source_yam/manifest.json \
   --success-dir runtime/one_source_yam/successes
 ```
 
-这条双臂命令是把一条 source 扩充到采样得到的多个 target 布局，不是为每个布局重新采集 source。
+先按 [YAM pipeline 指南](src/pnp_bimanual_yam/README.md)准备输入。`--workdir` 必须是这次运行的新目录，避免复用过期的 per-arm source 缓存。示例显式使用已验证的 40 步插值。Source 和场景 bundle 不包含在 Git 中。
 
-命令行参数 `--robot droid` 表示 **Franka 机器人搭配 DROID 风格相机**，不是 RB-Y1。RB-Y1 的 CuRobo/planner-server pipeline 是另一条可选上游工作线，不是下面 Franka 主流程的依赖。只有确实需要 RB-Y1 时，才阅读 [`docs/worklines/molmospaces_official_reproduction/README.md`](docs/worklines/molmospaces_official_reproduction/README.md)。
+下面的 Franka Quick Start 用于配套的 source 采集与 PnP adapter；YAM 的单 source 扩充入口是上面的命令。
+
 
 ## Franka Datagen Quick Start
 
@@ -382,7 +377,7 @@ $MOLMOSPACES_PYTHON src/pnp/sample_fixedbase_target_manifest.py --help
 $MOLMOSPACES_PYTHON src/pnp/run_generation.py --help
 ```
 
-先构建或选择一条通过验证的 source HDF5，再创建并验证独立 target manifest，之后执行上面的 single-source 命令。`generate_pick_place_rollout.py` 是单条真实 simulator rollout 的执行原语；多 source 的 `per-subtask` selection 保留给对比实验。完整用法和证据 gate 见 [`src/pnp/README.md`](src/pnp/README.md)。
+先构建或选择一条通过验证的 source HDF5，再创建并验证独立 target manifest，之后使用 [Franka single-source 命令](src/pnp/README.md#mainline-one-source-to-many-target-layouts)。`generate_pick_place_rollout.py` 是单条真实 simulator rollout 的执行原语；多 source 的 `per-subtask` selection 保留给对比实验。完整用法和证据 gate 见 [`src/pnp/README.md`](src/pnp/README.md)。
 
 
 ### 当前跨场景 target control
@@ -478,7 +473,8 @@ ssh -L 8765:127.0.0.1:8765 user@your-gpu-server
 molmo_spaces/             上游 MolmoSpaces Python 包
 scripts/                  上游 MolmoSpaces 脚本
 configs/, examples/, docs/ 上游配置、示例和文档
-src/pnp/                  Pick-and-Place MimicGen 集成脚本
+src/pnp_bimanual_yam/      主线：单 source 双臂 YAM MimicGen 扩充
+src/pnp/                  Franka Pick-and-Place MimicGen 集成脚本
 src/bimanual_yam/         bimanual YAM 诊断、浏览器可视化和键盘遥操作
 results/                  轻量 JSON manifest 和结果摘要
 media/                    GitHub README 使用的小体积演示视频

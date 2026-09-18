@@ -1,0 +1,63 @@
+{
+  "acceptance_gate": [
+    "potato_released",
+    "potato_plate_supported",
+    "potato_not_dropped",
+    "tomato_released",
+    "tomato_plate_supported",
+    "tomato_not_dropped",
+    "task"
+  ],
+  "claim": "One validated source demonstration expanded across multiple target layouts through sequential bimanual MimicGen.",
+  "completed_attempts": 16,
+  "limitations": [
+    "source and scene bundle are runtime inputs outside Git",
+    "success NPZ archives are not a training HDF5",
+    "replay/export, provenance deduplication, continuity audit, and larger-scale validation remain separate gates"
+  ],
+  "manifest_sha256": "9d300730d788b1797c5097ce55fa863b1877a9e69699bd98836b3d01dcc311a9",
+  "num_interpolation_steps": 40,
+  "schema_version": 1,
+  "seed": 20260915,
+  "source_demo_count": 1,
+  "source_sha256": "c3a972b8056d11f546b4297a36de32ad14fdce144901f4d6ac0418476784ab5e",
+  "status": "bounded_simulation_pilot",
+  "strict_success_rate": 0.375,
+  "strict_successes": 6,
+  "success_artifacts": [
+    {
+      "bytes": 7123342,
+      "name": "sample_000_seed_20260915.npz",
+      "sha256": "dde7689fee69277c3f1fa50c24a20a561f92815132935c3fd85757990daa1f72"
+    },
+    {
+      "bytes": 7116539,
+      "name": "sample_002_seed_20260917.npz",
+      "sha256": "51fcfb346b57c590d06c9d194720430f551a38e5255e560a5faa40fce3a8c790"
+    },
+    {
+      "bytes": 7126355,
+      "name": "sample_003_seed_20260918.npz",
+      "sha256": "61e7173d4a9f52129b0c998448483fc8491fee98d08f42134bf99d917834a840"
+    },
+    {
+      "bytes": 7105938,
+      "name": "sample_009_seed_20260924.npz",
+      "sha256": "129d5bd1f510463da2ec8ed169d9fc78b8a2dcaadefb0ea5e90d3a06d0ce00f5"
+    },
+    {
+      "bytes": 7121726,
+      "name": "sample_010_seed_20260925.npz",
+      "sha256": "c5923b018ffa7eb7e74c2c6449d9fd8160070535edd55d049d773137810929d2"
+    },
+    {
+      "bytes": 7138979,
+      "name": "sample_014_seed_20260929.npz",
+      "sha256": "b5e7a00b06886955e44a02a85948efae20b7db7f56a846dec11001dadb7fe5e2"
+    }
+  ],
+  "target_design": "lhs",
+  "target_layout_count": 16,
+  "workline": "floorplan1_bimanual_yam_one_source_mimicgen",
+  "xy_jitter_m": 0.1
+}

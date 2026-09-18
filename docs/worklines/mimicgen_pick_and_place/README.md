@@ -17,16 +17,19 @@ formal cross-scene benchmark result or training-data release.
 The primary route is one validated source demonstration expanded by MimicGen over
 multiple target layouts. The target manifest supplies the layout variation; it is not
 replaced by collecting a new source for every target. For the generic runner, use
-`--mode whole-source --source-count 1`. For FloorPlan1 bimanual YAM,
+`--mode whole-source --source-count 1 --diagnostic` for its whole-source control. For FloorPlan1 bimanual YAM,
 `src/pnp_bimanual_yam/run_datagen.py` converts one enriched source into right/left
-MimicGen inputs and keeps both arms inside one physical reset.
+MimicGen inputs and keeps both arms inside one physical reset. Its completed 16-layout pilot
+yielded 6 strict successes; see the [pipeline guide and evidence](../../../src/pnp_bimanual_yam/README.md).
 
 ## Active Entry Points
 
-The active code is intentionally limited to [`src/pnp/`](../../../src/pnp/):
+The Franka adapter lives in [`src/pnp/`](../../../src/pnp/). The bimanual mainline is documented in the [YAM pipeline guide](../../../src/pnp_bimanual_yam/README.md).
+
+Franka entrypoints:
 
 - `run_source_hdf5_pipeline.py`: parameterized source candidate selection, replay, conversion, and validation.
-- `run_generation.py`: parameterized MimicGen generation runner; the one-source mainline uses `--mode whole-source --source-count 1`, while multi-source comparisons may use `--mode per-subtask`.
+- `run_generation.py`: parameterized MimicGen generation runner; a whole-source control uses `--mode whole-source --source-count 1 --diagnostic`; `--mode per-subtask` supports one or more source demos.
 - `generate_pick_place_rollout.py`: one simulator rollout primitive.
 - `select_source_pool.py`, `replay_source_candidate.py`, `convert_source_hdf5.py`, and `validate_robomimic_source_hdf5.py`: the source-HDF5 pipeline stages.
 - `sample_fixedbase_target_manifest.py` and `validate_fixedbase_target_manifest.py`: target-layout stages.
