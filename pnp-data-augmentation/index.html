@@ -1362,6 +1362,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#mainline-contract-one-source-many-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mainline contract: one source, many targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#1-prepare-a-validated-source-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1501,11 +1512,26 @@ scenario definition, Python data logic, and shell environment setup.</p>
 stack. CPU rendering can be useful for import/configuration diagnosis, but is
 not a performance-equivalent data-collection configuration.</p>
 <h2 id="supported-workflow">Supported workflow<a class="headerlink" href="#supported-workflow" title="Permanent link">&para;</a></h2>
+<h3 id="mainline-contract-one-source-many-targets">Mainline contract: one source, many targets<a class="headerlink" href="#mainline-contract-one-source-many-targets" title="Permanent link">&para;</a></h3>
+<p>The repository's mainline is one validated source expanded across multiple target layouts. The completed <strong>FloorPlan1 bimanual YAM pilot achieved 6/16 strict successes</strong>. Its <a href="../src/pnp_bimanual_yam/README.md">pipeline guide</a> documents the sequential single-reset runner, scene/source inputs, and NPZ outputs.</p>
+<p>The following sections cover the companion Franka PnP adapter, which uses a validated source HDF5 plus a separate immutable target manifest. A single-source whole-trajectory control can be launched directly after the prerequisites above:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/run_generation.py<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span>--work<span class="w"> </span>runtime/one_source_expansion<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--source-hdf5<span class="w"> </span>/path/to/validated_source_one_demo.hdf5<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span>--target-manifest<span class="w"> </span>/path/to/target_manifest.json<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span>--mode<span class="w"> </span>whole-source<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--source-count<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--diagnostic<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span>--target-success<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span>--max-attempts<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span>--run-label<span class="w"> </span>one_source_mimicgen
+</code></pre></div>
+<p><code>--source-count 1</code> verifies that the HDF5 contains exactly one demo; it does not select one demo from a larger pool. <code>whole-source</code> keeps that demo across all subtasks. This Franka control retains the existing diagnostic classification. <code>per-subtask</code> selection can also use a one-demo pool; with multiple demos it enables reselection at each subtask.</p>
 <h3 id="1-prepare-a-validated-source-dataset">1. Prepare a validated source dataset<a class="headerlink" href="#1-prepare-a-validated-source-dataset" title="Permanent link">&para;</a></h3>
 <p>Run the source pipeline with explicit input/output paths. It invokes selection,
 deterministic replay, conversion, and source-HDF5 validation as separate Python
 operations:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/run_source_hdf5_pipeline.py<span class="w"> </span>--help
 </code></pre></div>
 <p>Before reuse, verify the source HDF5 has the expected demo count, finite arrays,
 MimicGen datagen fields, action alignment, and recorded provenance.</p>
@@ -1513,8 +1539,8 @@ MimicGen datagen fields, action alignment, and recorded provenance.</p>
 <p>The target sampler intentionally has no hidden scene/object/base-pose defaults.
 Supply every scenario-defining value explicitly and validate its output before
 rollouts:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/sample_fixedbase_target_manifest.py<span class="w"> </span>--help
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="s2">"</span><span class="nv">$MOLMOSPACES_PYTHON</span><span class="s2">"</span><span class="w"> </span>src/pnp/validate_fixedbase_target_manifest.py<span class="w"> </span>--help
 </code></pre></div>
 <p>A target manifest is an input artifact: keep it immutable after a generation
 run begins. It stores the frozen reset state and a layout SHA-256 per target.</p>
@@ -1527,21 +1553,23 @@ for one rollout, which is useful path-validation evidence but not a dataset-leve
 success-rate claim.</p>
 <h3 id="3-create-and-validate-a-generation-configuration">3. Create and validate a generation configuration<a class="headerlink" href="#3-create-and-validate-a-generation-configuration" title="Permanent link">&para;</a></h3>
 <p>Copy the example rather than editing code:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cp<span class="w"> </span>configs/pnp/generation.example.json<span class="w"> </span>configs/pnp/my_run.json
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cp<span class="w"> </span>configs/pnp/generation.example.json<span class="w"> </span>configs/pnp/my_run.json
 </code></pre></div>
 <p>Set <code>repository_root</code>, <code>work_dir</code>, the validated source HDF5, the validated
 target manifest, and the desired generation controls. Paths relative to the
 configuration file are supported; source/manifest paths may also be absolute.</p>
 <p>Validate before allocating a GPU or writing data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json<span class="w"> </span>--dry-run
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json<span class="w"> </span>--dry-run
 </code></pre></div>
 <p>Run a one-target smoke first. Only after reviewing its artifacts should you
 raise <code>target_success</code>, target range, or maximum attempts:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>scripts/pnp/run_generation.sh<span class="w"> </span>configs/pnp/my_run.json
 </code></pre></div>
-<p><code>per-subtask</code> is the supported MimicGen source-selection route. <code>whole-source</code>
-requires <code>diagnostic: true</code> and is a compatibility control, not a substitute
-for formal subtask recombination.</p>
+<p>For a one-demo configuration, set <code>inputs.source_count=1</code>. The configuration
+wrapper requires <code>generation.diagnostic=true</code> for <code>generation.mode="whole-source"</code>.
+Use <code>per-subtask</code> to exercise the subtask-selection route with one or more demos.
+These Franka controls have their own acceptance policy; the successful YAM pipeline
+uses the dedicated runner linked above.</p>
 <h2 id="artifact-contract-and-acceptance">Artifact contract and acceptance<a class="headerlink" href="#artifact-contract-and-acceptance" title="Permanent link">&para;</a></h2>
 <p>Each run receives a new log directory containing <code>collector.log</code>, per-attempt
 logs, <code>attempts.jsonl</code>, <code>accepted.jsonl</code>, action/layout hash registries, and
@@ -1600,7 +1628,7 @@ uncommitted change.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="August 18, 2026 05:57:34 UTC"><span class="timeago" datetime="2026-08-18T05:57:34+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="August 18, 2026 05:57:34 UTC">2026-08-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 18, 2026 03:59:58 UTC"><span class="timeago" datetime="2026-09-18T03:59:58+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 18, 2026 03:59:58 UTC">2026-09-18</span>
   </span>
 
     
