@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "device_name": "BEITONG BTP-KP20D BFM DONGLE",
+  "device_guid": "00000a97424549544f4e472042545000",
+  "num_axes": 6,
+  "num_buttons": 16,
+  "axes": {
+    "lx": {
+      "index": 0,
+      "gain": 1.0,
+      "kind": "stick",
+      "rest": 0.0,
+      "span": 2.0
+    },
+    "ly": {
+      "index": 1,
+      "gain": -1.0,
+      "kind": "stick",
+      "rest": 0.0,
+      "span": 2.0
+    },
+    "rx": {
+      "index": 2,
+      "gain": 1.0,
+      "kind": "stick",
+      "rest": 0.0,
+      "span": 2.0
+    },
+    "ry": {
+      "index": 3,
+      "gain": -1.0,
+      "kind": "stick",
+      "rest": 0.0,
+      "span": 2.0
+    },
+    "lt": {
+      "index": 5,
+      "gain": 1.0,
+      "kind": "trigger",
+      "rest": 0.0,
+      "span": 1.0
+    },
+    "rt": {
+      "index": 4,
+      "gain": 1.0,
+      "kind": "trigger",
+      "rest": 0.0,
+      "span": 1.0
+    }
+  },
+  "buttons": {
+    "open": 0,
+    "close": 1,
+    "home": 3,
+    "print": 4,
+    "pitch_neg": 6,
+    "pitch_pos": 7,
+    "quit": 11
+  },
+  "created": "2026-08-18 18:01:55"
+}
