@@ -49,6 +49,40 @@ not a performance-equivalent data-collection configuration.
 
 ## Supported workflow
 
+### Mainline contract: one source, many targets
+
+The supported mainline starts with one validated source demonstration. MimicGen receives that complete one-demo source and transforms it for each immutable target-layout entry; the target manifest, not a second source collection, provides diversity. The same contract is used by the generic Franka runner and by the sequential bimanual YAM runner.
+
+For the generic runner:
+
+```bash
+"$MOLMOSPACES_PYTHON" src/pnp/run_generation.py \
+  --work runtime/one_source_expansion \
+  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
+  --target-manifest /path/to/target_manifest.json \
+  --mode whole-source \
+  --source-count 1 \
+  --target-success 10 \
+  --max-attempts 30 \
+  --run-label one_source_mimicgen
+```
+
+`whole-source` is intentional here: with `--source-count 1`, MimicGen sees exactly one validated source demo for every target. Use `per-subtask` only when a multi-source comparison is the actual experiment.
+
+For FloorPlan1 bimanual YAM, one enriched source is converted to one right-arm and one left-arm MimicGen source, then both arms run sequentially inside one physical reset:
+
+```bash
+PYTHONPATH=.:vendor/mimicgen:vendor/robomimic "$MOLMOSPACES_PYTHON" src/pnp_bimanual_yam/run_datagen.py \
+  --src /path/to/source_demo_enriched.h5 \
+  --num-attempts 16 \
+  --sampling-design lhs \
+  --xy-jitter 0.10 \
+  --manifest runtime/one_source_yam/manifest.json \
+  --success-dir runtime/one_source_yam/successes
+```
+
+This expands one source across target layouts; it does not create a new source demonstration per target.
+
 ### 1. Prepare a validated source dataset
 
 Run the source pipeline with explicit input/output paths. It invokes selection,
@@ -110,9 +144,11 @@ raise `target_success`, target range, or maximum attempts:
 scripts/pnp/run_generation.sh configs/pnp/my_run.json
 ```
 
-`per-subtask` is the supported MimicGen source-selection route. `whole-source`
-requires `diagnostic: true` and is a compatibility control, not a substitute
-for formal subtask recombination.
+`whole-source` with `--source-count 1` is the documented one-source mainline. The
+configuration wrapper still requires `generation.diagnostic=true` whenever it is used
+for a whole-source compatibility run; the direct CLI above makes the validated
+one-source contract explicit. `per-subtask` remains available for multi-source
+recombination studies.
 
 ## Artifact contract and acceptance
 

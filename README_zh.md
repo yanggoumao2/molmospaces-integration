@@ -28,7 +28,7 @@
 ## 主工作线
 
 ```text
-通过验证的源示范  ->  跨 target 布局的 MimicGen 变换  ->  replay、视频、HDF5 与唯一性检查
+一条通过验证的 source demonstration  ->  跨 target 布局的 MimicGen 扩充  ->  replay、视频、HDF5 与唯一性检查
 ```
 
 仓库聚焦可复现的 Franka Pick-and-Place 路线。它将源示范采集、target 布局采样和生成 rollout 的验收分开记录，避免将可运行进程、已保存 artifact 与严格任务成功混为同一层证据。
@@ -70,7 +70,39 @@
 
 本仓库的主流程是：
 
-> Franka Pick-and-Place datagen -> 验收 HDF5/视频 -> 转换为 MimicGen source 并生成 rollout
+> 一条通过验证的 Franka source demonstration -> MimicGen 扩充到多个独立 target 布局 -> 验收生成 rollout
+
+### 主线：一条 source demonstration 经过 MimicGen 扩充
+
+主线流程刻意保持最小闭环：先验证一条 source demonstration，再冻结独立的 target-layout manifest，最后让 MimicGen 将同一条 source 变换到多个 target 布局。多条 source 只用于对比实验，不是主线的前置条件。
+
+对通用 Franka Pick-and-Place runner，使用 `--mode whole-source` 加 `--source-count 1` 明确表达这一契约：每个 target entry 都接收完整的单条 source。一次生成运行期间 target manifest 保持不可变；每条 rollout 仍需通过 replay、持久化、artifact 和唯一性检查。
+
+```bash
+$MOLMOSPACES_PYTHON src/pnp/run_generation.py \
+  --work runtime/one_source_expansion \
+  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
+  --target-manifest /path/to/target_manifest.json \
+  --mode whole-source \
+  --source-count 1 \
+  --target-success 10 \
+  --max-attempts 30 \
+  --run-label one_source_mimicgen
+```
+
+FloorPlan1 双臂 YAM 路线也遵循同一条 single-source 契约：一条 enriched source demo 被转换成右/左臂 MimicGen 输入，两只手臂在同一次物理 reset 中顺序执行，每个 target 布局写入 checkpoint 结果。
+
+```bash
+PYTHONPATH=.:vendor/mimicgen:vendor/robomimic $MOLMOSPACES_PYTHON src/pnp_bimanual_yam/run_datagen.py \
+  --src /path/to/source_demo_enriched.h5 \
+  --num-attempts 16 \
+  --sampling-design lhs \
+  --xy-jitter 0.10 \
+  --manifest runtime/one_source_yam/manifest.json \
+  --success-dir runtime/one_source_yam/successes
+```
+
+这条双臂命令是把一条 source 扩充到采样得到的多个 target 布局，不是为每个布局重新采集 source。
 
 命令行参数 `--robot droid` 表示 **Franka 机器人搭配 DROID 风格相机**，不是 RB-Y1。RB-Y1 的 CuRobo/planner-server pipeline 是另一条可选上游工作线，不是下面 Franka 主流程的依赖。只有确实需要 RB-Y1 时，才阅读 [`docs/worklines/molmospaces_official_reproduction/README.md`](docs/worklines/molmospaces_official_reproduction/README.md)。
 
@@ -342,7 +374,7 @@ mkdir -p "$MOLMOSPACES_PNP_WORKDIR"/{artifacts/seeds,artifacts/mimicgen_pnp,data
 
 ### 3. 当前 Pick-and-Place pipeline
 
-当前 source 构建和生成路径均为参数化 CLI；source 数量、source HDF5、target manifest、target 范围和输出标签均通过运行参数提供，不再编码在脚本名中。当前受控 pilot 使用 17 条唯一、回放验证通过的 source demos。
+当前 source 构建和生成路径均为参数化 CLI；source 数量、source HDF5、target manifest、target 范围和输出标签均通过运行参数提供，不再编码在脚本名中。主线使用一条通过验证的 source demonstration；17 条唯一、回放验证通过的 source pilot 保留为可选的多 source 对比。
 
 ```bash
 $MOLMOSPACES_PYTHON src/pnp/run_source_hdf5_pipeline.py --help
@@ -350,7 +382,7 @@ $MOLMOSPACES_PYTHON src/pnp/sample_fixedbase_target_manifest.py --help
 $MOLMOSPACES_PYTHON src/pnp/run_generation.py --help
 ```
 
-先构建或选择 source HDF5，再创建并验证独立 target manifest，之后以 `run_generation.py --mode per-subtask` 执行官方 MimicGen source-selection 路线。`generate_pick_place_rollout.py` 是单条真实 simulator rollout 的执行原语。完整用法和证据 gate 见 [`src/pnp/README.md`](src/pnp/README.md)。
+先构建或选择一条通过验证的 source HDF5，再创建并验证独立 target manifest，之后执行上面的 single-source 命令。`generate_pick_place_rollout.py` 是单条真实 simulator rollout 的执行原语；多 source 的 `per-subtask` selection 保留给对比实验。完整用法和证据 gate 见 [`src/pnp/README.md`](src/pnp/README.md)。
 
 
 ### 当前跨场景 target control

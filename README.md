@@ -28,7 +28,7 @@
 ## The primary workline
 
 ```text
-Validated source demonstrations  ->  MimicGen transformation across target layouts  ->  Replay, video, HDF5, and uniqueness checks
+One validated source demonstration  ->  MimicGen expansion across target layouts  ->  Replay, video, HDF5, and uniqueness checks
 ```
 
 The repository focuses on a reproducible Franka Pick-and-Place route. It separates source collection, target-layout sampling, and generated rollout acceptance so that a runnable process, a saved artifact, and a strict task outcome are never treated as interchangeable evidence.
@@ -70,7 +70,39 @@ Large runtime data are excluded from Git: official shards, generated HDF5 files,
 
 The primary workflow in this repository is:
 
-> Franka Pick-and-Place datagen -> validated HDF5/video artifacts -> MimicGen source conversion and rollout generation
+> One validated Franka source demonstration -> MimicGen expansion across independent target layouts -> accepted rollouts
+
+### Mainline: one validated source demonstration to MimicGen expansion
+
+The mainline contract is deliberately small: validate one source demonstration, freeze an independent target-layout manifest, and let MimicGen transform that same source into multiple target layouts. A multi-demo source pool is optional for comparison experiments; it is not a prerequisite for the repository's primary route.
+
+For the generic Franka Pick-and-Place runner, `--mode whole-source` with `--source-count 1` makes the contract explicit: the complete one-demo source is passed to MimicGen for every target entry. The target manifest stays immutable for the run, and each generated rollout is accepted only after replay, persistence, artifact, and uniqueness checks.
+
+```bash
+$MOLMOSPACES_PYTHON src/pnp/run_generation.py \
+  --work runtime/one_source_expansion \
+  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
+  --target-manifest /path/to/target_manifest.json \
+  --mode whole-source \
+  --source-count 1 \
+  --target-success 10 \
+  --max-attempts 30 \
+  --run-label one_source_mimicgen
+```
+
+For the FloorPlan1 bimanual YAM route, the same single-source contract is implemented by the sequential runner: one enriched source demo is converted into right/left MimicGen inputs, both arms run in one physical reset, and each target layout receives a checkpointed result.
+
+```bash
+PYTHONPATH=.:vendor/mimicgen:vendor/robomimic $MOLMOSPACES_PYTHON src/pnp_bimanual_yam/run_datagen.py \
+  --src /path/to/source_demo_enriched.h5 \
+  --num-attempts 16 \
+  --sampling-design lhs \
+  --xy-jitter 0.10 \
+  --manifest runtime/one_source_yam/manifest.json \
+  --success-dir runtime/one_source_yam/successes
+```
+
+The bimanual command expands one source across sampled target layouts; it does not collect a new source demo per layout.
 
 The command-line value `--robot droid` selects a **Franka robot with DROID-style cameras**. It does not select an RB-Y1 robot. The RB-Y1 CuRobo/planner-server pipeline is a separate optional upstream workline and is not required for the Franka workflow below. See [`docs/worklines/molmospaces_official_reproduction/README.md`](docs/worklines/molmospaces_official_reproduction/README.md) only if that separate workline is your goal.
 
@@ -363,7 +395,7 @@ mkdir -p "$MOLMOSPACES_PNP_WORKDIR"/{artifacts/seeds,artifacts/mimicgen_pnp,data
 
 ### 3. Active Pick-and-Place pipeline
 
-The active source build and generation path is parameterized; source count, source HDF5, target manifest, target range, and output label are run arguments rather than script names. The current controlled pilot uses 17 unique replay-verified source demonstrations.
+The active source build and generation path is parameterized; source count, source HDF5, target manifest, target range, and output label are run arguments rather than script names. The mainline uses one validated source demonstration; the 17-demo replay-verified pilot is retained as an optional multi-source comparison.
 
 ```bash
 $MOLMOSPACES_PYTHON src/pnp/run_source_hdf5_pipeline.py --help
@@ -371,7 +403,7 @@ $MOLMOSPACES_PYTHON src/pnp/sample_fixedbase_target_manifest.py --help
 $MOLMOSPACES_PYTHON src/pnp/run_generation.py --help
 ```
 
-Build or select a source HDF5, create and validate an independent target manifest, then use `run_generation.py --mode per-subtask` for the official MimicGen selection route. `generate_pick_place_rollout.py` is the single-rollout execution primitive. Full usage and evidence gates are in [`src/pnp/README.md`](src/pnp/README.md).
+Build or select one validated source HDF5, create and validate an independent target manifest, then run the one-source command above. `generate_pick_place_rollout.py` is the single-rollout execution primitive. Multi-source `per-subtask` selection remains available for comparison studies. Full usage and evidence gates are in [`src/pnp/README.md`](src/pnp/README.md).
 
 Historical 50-demo cross-subtask scripts and collectors are archived under [`archive/pnp/`](archive/pnp/); the corresponding result directories remain unchanged under `results/`.
 

@@ -12,17 +12,26 @@ the `support_adapted_planar_pair` layout. One normal rollout passed final and
 persistent post-hold success, but this remains a diagnostic control rather than a
 formal cross-scene benchmark result or training-data release.
 
+## Mainline contract
+
+The primary route is one validated source demonstration expanded by MimicGen over
+multiple target layouts. The target manifest supplies the layout variation; it is not
+replaced by collecting a new source for every target. For the generic runner, use
+`--mode whole-source --source-count 1`. For FloorPlan1 bimanual YAM,
+`src/pnp_bimanual_yam/run_datagen.py` converts one enriched source into right/left
+MimicGen inputs and keeps both arms inside one physical reset.
+
 ## Active Entry Points
 
 The active code is intentionally limited to [`src/pnp/`](../../../src/pnp/):
 
 - `run_source_hdf5_pipeline.py`: parameterized source candidate selection, replay, conversion, and validation.
-- `run_generation.py`: parameterized MimicGen generation runner; official runs use `--mode per-subtask`.
+- `run_generation.py`: parameterized MimicGen generation runner; the one-source mainline uses `--mode whole-source --source-count 1`, while multi-source comparisons may use `--mode per-subtask`.
 - `generate_pick_place_rollout.py`: one simulator rollout primitive.
 - `select_source_pool.py`, `replay_source_candidate.py`, `convert_source_hdf5.py`, and `validate_robomimic_source_hdf5.py`: the source-HDF5 pipeline stages.
 - `sample_fixedbase_target_manifest.py` and `validate_fixedbase_target_manifest.py`: target-layout stages.
 
-The active controlled pilot uses 17 unique replay-verified source demos. The count is an input to `run_generation.py`, not a module or directory name.
+The mainline uses one validated source demonstration. The 17-demo replay-verified pilot is an optional multi-source comparison; its count is an input to `run_generation.py`, not a module or directory name.
 
 ## Minimal Commands
 

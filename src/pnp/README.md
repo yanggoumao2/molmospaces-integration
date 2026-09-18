@@ -11,9 +11,9 @@ scene, or a particular object pair.
 ## Architecture
 
 ```text
-validated source HDF5 ─┐
-                       ├─ run_experiment.py + JSON configuration
-validated target manifest ┘            │
+one validated source HDF5 ─┐
+                             ├─ run_experiment.py + JSON configuration
+validated target manifest ───┘            │
                                        ▼
                               run_generation.py
                                        ▼
@@ -21,6 +21,31 @@ validated target manifest ┘            │
                                        ▼
        per-attempt artifacts + JSONL provenance + HDF5 + summary
 ```
+
+## Mainline: one source to many target layouts
+
+The supported contract is one validated source demonstration plus an immutable target
+manifest. MimicGen applies the source trajectory to every target entry, so target
+layout variation provides expansion without collecting a new source for each layout.
+Use the direct runner with an explicit one-demo source pool:
+
+```bash
+"$MOLMOSPACES_PYTHON" src/pnp/run_generation.py \
+  --work runtime/one_source_expansion \
+  --source-hdf5 /path/to/validated_source_one_demo.hdf5 \
+  --target-manifest /path/to/target_manifest.json \
+  --mode whole-source \
+  --source-count 1 \
+  --target-success 10 \
+  --max-attempts 30 \
+  --run-label one_source_mimicgen
+```
+
+`per-subtask` remains a separate multi-source comparison route. The FloorPlan1
+bimanual YAM implementation follows the same contract in
+`src/pnp_bimanual_yam/run_datagen.py`: one enriched source is converted to one
+source per arm, then the right and left arms execute sequentially in one physical
+reset while each target-layout result is checkpointed.
 
 | Module | Responsibility |
 | --- | --- |
